@@ -35,11 +35,23 @@ random_hex() {
 set_env() {
   local key="$1"
   local value="$2"
-  if grep -qE "^${key}=" variables.env; then
-    perl -0pi -e "s|^${key}=.*$|${key}=${value}|m" variables.env
-  else
-    printf '%s=%s\n' "${key}" "${value}" >> variables.env
-  fi
+  python3 - "${key}" "${value}" variables.env <<'PY'
+import pathlib
+import sys
+
+key, value, path = sys.argv[1], sys.argv[2], pathlib.Path(sys.argv[3])
+lines = path.read_text().splitlines()
+prefix = f"{key}="
+
+for index, line in enumerate(lines):
+    if line.startswith(prefix):
+        lines[index] = f"{key}={value}"
+        break
+else:
+    lines.append(f"{key}={value}")
+
+path.write_text("\n".join(lines) + "\n")
+PY
 }
 
 POSTGRES_PASSWORD_VALUE="$(grep -E '^POSTGRES_PASSWORD=' variables.env | cut -d= -f2-)"
@@ -50,11 +62,11 @@ AWS_SECRET_ACCESS_KEY_VALUE="$(grep -E '^AWS_SECRET_ACCESS_KEY=' variables.env |
 LIVE_SERVER_SECRET_KEY_VALUE="$(grep -E '^LIVE_SERVER_SECRET_KEY=' variables.env | cut -d= -f2-)"
 
 if [[ "${POSTGRES_PASSWORD_VALUE}" == "plane" || -z "${POSTGRES_PASSWORD_VALUE}" ]]; then
-  POSTGRES_PASSWORD_VALUE="$(random_urlsafe 36)"
+  POSTGRES_PASSWORD_VALUE="$(random_hex 24)"
 fi
 
 if [[ "${RABBITMQ_PASSWORD_VALUE}" == "plane" || -z "${RABBITMQ_PASSWORD_VALUE}" ]]; then
-  RABBITMQ_PASSWORD_VALUE="$(random_urlsafe 36)"
+  RABBITMQ_PASSWORD_VALUE="$(random_hex 24)"
 fi
 
 if [[ "${SECRET_KEY_VALUE}" == "60gp0byfz2dvffa45cxl20p1scy9xbpf6d8c5y0geejgkyp1b5" || -z "${SECRET_KEY_VALUE}" ]]; then
@@ -100,7 +112,7 @@ set_env FILE_SIZE_LIMIT "52428800"
 set_env API_KEY_RATE_LIMIT "60/minute"
 set_env LIVE_SERVER_SECRET_KEY "${LIVE_SERVER_SECRET_KEY_VALUE}"
 set_env TRUSTED_PROXIES "127.0.0.1"
-set_env CERT_EMAIL "admin@lead-up.ru"
+set_env CERT_EMAIL ""
 set_env CERT_ACME_CA ""
 set_env CERT_ACME_DNS ""
 
@@ -110,4 +122,3 @@ echo "Plane runtime prepared in ${RUNTIME_DIR}"
 echo "Release: ${RELEASE}"
 echo "Domain: ${DOMAIN}"
 echo "HTTP port: ${HTTP_PORT}"
-
