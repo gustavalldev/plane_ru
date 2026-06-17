@@ -54,6 +54,49 @@ path.write_text("\n".join(lines) + "\n")
 PY
 }
 
+restrict_proxy_ports_to_loopback() {
+  python3 - docker-compose.yml <<'PY'
+import pathlib
+import sys
+
+path = pathlib.Path(sys.argv[1])
+text = path.read_text()
+replacements = (
+    (
+        """      - target: 80
+        published: ${LISTEN_HTTP_PORT:-80}
+        protocol: tcp
+        mode: host""",
+        """      - target: 80
+        published: ${LISTEN_HTTP_PORT:-80}
+        protocol: tcp
+        mode: host
+        host_ip: 127.0.0.1""",
+    ),
+    (
+        """      - target: 443
+        published: ${LISTEN_HTTPS_PORT:-443}
+        protocol: tcp
+        mode: host""",
+        """      - target: 443
+        published: ${LISTEN_HTTPS_PORT:-443}
+        protocol: tcp
+        mode: host
+        host_ip: 127.0.0.1""",
+    ),
+)
+
+for old, new in replacements:
+    if new in text:
+        continue
+    if old not in text:
+        raise SystemExit("Could not patch Plane proxy ports to localhost-only")
+    text = text.replace(old, new, 1)
+
+path.write_text(text)
+PY
+}
+
 POSTGRES_PASSWORD_VALUE="$(grep -E '^POSTGRES_PASSWORD=' variables.env | cut -d= -f2-)"
 RABBITMQ_PASSWORD_VALUE="$(grep -E '^RABBITMQ_PASSWORD=' variables.env | cut -d= -f2-)"
 SECRET_KEY_VALUE="$(grep -E '^SECRET_KEY=' variables.env | cut -d= -f2-)"
@@ -115,6 +158,8 @@ set_env TRUSTED_PROXIES "127.0.0.1"
 set_env CERT_EMAIL ""
 set_env CERT_ACME_CA "https://acme-v02.api.letsencrypt.org/directory"
 set_env CERT_ACME_DNS ""
+
+restrict_proxy_ports_to_loopback
 
 chmod 600 variables.env
 
