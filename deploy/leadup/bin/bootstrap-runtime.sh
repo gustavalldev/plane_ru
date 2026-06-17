@@ -113,7 +113,7 @@ set_env API_KEY_RATE_LIMIT "60/minute"
 set_env LIVE_SERVER_SECRET_KEY "${LIVE_SERVER_SECRET_KEY_VALUE}"
 set_env TRUSTED_PROXIES "127.0.0.1"
 set_env CERT_EMAIL ""
-set_env CERT_ACME_CA ""
+set_env CERT_ACME_CA "https://acme-v02.api.letsencrypt.org/directory"
 set_env CERT_ACME_DNS ""
 
 chmod 600 variables.env
