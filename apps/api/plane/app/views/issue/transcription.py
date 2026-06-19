@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 
+import logging
+
 import requests
 
 from django.conf import settings
@@ -13,6 +15,8 @@ from rest_framework.response import Response
 from plane.app.permissions import ROLE, allow_permission
 
 from .. import BaseAPIView
+
+logger = logging.getLogger("plane")
 
 
 class IssueVoiceTranscriptionEndpoint(BaseAPIView):
@@ -54,17 +58,26 @@ class IssueVoiceTranscriptionEndpoint(BaseAPIView):
             )
 
         if response.status_code >= 400:
-            return Response(
-                {
-                    "error": "Transcription failed.",
-                    "detail": response.text[:500],
+            logger.warning(
+                "Voice transcription service failed",
+                extra={
+                    "status_code": response.status_code,
+                    "response_body": response.text[:500],
+                    "content_type": content_type,
                 },
+            )
+            return Response(
+                {"error": "Transcription failed. Please try again later."},
                 status=status.HTTP_502_BAD_GATEWAY,
             )
 
         try:
             payload = response.json()
         except ValueError:
+            logger.warning(
+                "Voice transcription service returned invalid JSON",
+                extra={"status_code": response.status_code, "content_type": content_type},
+            )
             return Response(
                 {"error": "Transcription service returned an invalid response."},
                 status=status.HTTP_502_BAD_GATEWAY,

@@ -169,8 +169,10 @@
           "permission": "Microphone access was denied or unavailable.",
           "empty": "Recording is empty. Try again.",
           "empty_transcript": "Could not detect speech in this recording.",
-          "transcribe": "Transcription failed. Try again later."
-        }
+          "transcribe": "Transcription failed. Try again later.",
+          "submit": "Could not send the voice comment. Your text and recording are saved; try again."
+        },
+        "max_duration_reached": "The 2 minute recording limit was reached. Recording stopped automatically."
       }
     },
     "empty_state": {

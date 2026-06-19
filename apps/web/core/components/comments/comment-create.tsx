@@ -36,6 +36,7 @@ const fileService = new FileService();
 const issueAttachmentService = new IssueAttachmentService();
 const issueTranscriptionService = new IssueTranscriptionService();
 
+const MAX_RECORDING_DURATION_SECONDS = 120;
 const VOICE_MIME_TYPES = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
 
 type TVoiceDraftStatus = "idle" | "recording" | "preview" | "transcribing" | "ready" | "uploading" | "error";
@@ -47,6 +48,7 @@ type TVoiceDraft = {
   previewUrl?: string;
   transcript?: string;
   errorKey?: string;
+  warningKey?: string;
 };
 
 const getSupportedRecordingMimeType = () => {
@@ -208,16 +210,35 @@ export const CommentCreate = observer(function CommentCreate(props: TCommentCrea
         });
         const previewUrl = URL.createObjectURL(blob);
         const duration = Math.max(1, Math.round((Date.now() - recordingStartedAtRef.current) / 1000));
-        setVoiceDraft({ status: "preview", duration, file, previewUrl });
+        setVoiceDraft((current) => ({
+          status: "preview",
+          duration,
+          file,
+          previewUrl,
+          warningKey:
+            current.warningKey ??
+            (duration >= MAX_RECORDING_DURATION_SECONDS ? "issue.comments.voice.max_duration_reached" : undefined),
+        }));
       };
 
       recordingStartedAtRef.current = Date.now();
       recorder.start();
       setVoiceDraft({ status: "recording", duration: 0 });
       recordingTimerRef.current = setInterval(() => {
+        const duration = Math.round((Date.now() - recordingStartedAtRef.current) / 1000);
+        if (duration >= MAX_RECORDING_DURATION_SECONDS) {
+          setVoiceDraft((current) => ({
+            ...current,
+            duration: MAX_RECORDING_DURATION_SECONDS,
+            warningKey: "issue.comments.voice.max_duration_reached",
+          }));
+          stopRecording();
+          return;
+        }
+
         setVoiceDraft((current) => ({
           ...current,
-          duration: Math.round((Date.now() - recordingStartedAtRef.current) / 1000),
+          duration,
         }));
       }, 500);
     } catch {
@@ -297,7 +318,13 @@ export const CommentCreate = observer(function CommentCreate(props: TCommentCrea
       }
 
       const comment = await activityOperations.createComment(submitData);
-      if (comment?.id) onSubmitCallback?.(comment.id);
+      if (!comment?.id) {
+        if (voiceFile)
+          setVoiceDraft((current) => ({ ...current, status: "ready", errorKey: "issue.comments.voice.errors.submit" }));
+        return;
+      }
+
+      onSubmitCallback?.(comment.id);
       if (uploadedAssetIds.length > 0) {
         if (projectId) {
           await fileService.updateBulkProjectAssetsUploadStatus(workspaceSlug, projectId.toString(), entityId, {
@@ -310,14 +337,16 @@ export const CommentCreate = observer(function CommentCreate(props: TCommentCrea
         }
         setUploadedAssetIds([]);
       }
-      if (voiceFile) clearVoiceDraft();
-    } catch (error) {
-      console.error(error);
-    } finally {
+
       reset({
         comment_html: "<p></p>",
       });
       editorRef.current?.clearEditor();
+      if (voiceFile) clearVoiceDraft();
+    } catch (error) {
+      console.error(error);
+      if (voiceFile)
+        setVoiceDraft((current) => ({ ...current, status: "ready", errorKey: "issue.comments.voice.errors.submit" }));
     }
   };
 
@@ -434,6 +463,8 @@ export const CommentCreate = observer(function CommentCreate(props: TCommentCrea
               <track kind="captions" />
             </audio>
             <span className="text-tertiary">{formatDuration(voiceDraft.duration)}</span>
+            {voiceDraft.warningKey && <span className="text-amber-600">{t(voiceDraft.warningKey)}</span>}
+            {voiceDraft.errorKey && <span className="text-red-600">{t(voiceDraft.errorKey)}</span>}
             {voiceDraft.status === "preview" && (
               <button
                 type="button"
