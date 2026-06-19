@@ -151,7 +151,7 @@
       },
       "voice": {
         "record": "Record voice",
-        "recording": "Recording {{duration}}",
+        "recording": "Recording {duration}",
         "stop": "Stop",
         "cancel": "Cancel",
         "dismiss": "Dismiss",

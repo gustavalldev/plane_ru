@@ -151,7 +151,7 @@
       },
       "voice": {
         "record": "Записать голос",
-        "recording": "Идёт запись {{duration}}",
+        "recording": "Идёт запись {duration}",
         "stop": "Остановить",
         "cancel": "Отменить",
         "dismiss": "Скрыть",
