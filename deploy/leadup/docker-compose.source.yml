@@ -18,6 +18,16 @@ x-leadup-backend-build: &leadup-backend-build
   args:
     DOCKER_BUILDKIT: 1
 
+x-leadup-email-env: &leadup-email-env
+  ENABLE_SMTP: ${ENABLE_SMTP:-0}
+  EMAIL_HOST: ${EMAIL_HOST:-}
+  EMAIL_HOST_USER: ${EMAIL_HOST_USER:-}
+  EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD:-}
+  EMAIL_PORT: ${EMAIL_PORT:-587}
+  EMAIL_FROM: ${EMAIL_FROM:-Team Plane <team@mailer.plane.so>}
+  EMAIL_USE_TLS: ${EMAIL_USE_TLS:-1}
+  EMAIL_USE_SSL: ${EMAIL_USE_SSL:-0}
+
 services:
   transcription:
     image: leadup/plane-transcription:${LEADUP_PLANE_IMAGE_TAG:-preview}
@@ -54,6 +64,7 @@ services:
     image: leadup/plane-backend:${LEADUP_PLANE_IMAGE_TAG:-preview}
     build: *leadup-backend-build
     environment:
+      <<: *leadup-email-env
       TRANSCRIPTION_SERVICE_URL: ${TRANSCRIPTION_SERVICE_URL:-http://transcription:8000}
       TRANSCRIPTION_API_TOKEN: ${TRANSCRIPTION_API_TOKEN:?TRANSCRIPTION_API_TOKEN is required}
       TRANSCRIPTION_UPLOAD_SIZE_LIMIT: ${TRANSCRIPTION_UPLOAD_SIZE_LIMIT:-26214400}
@@ -63,14 +74,17 @@ services:
   worker:
     image: leadup/plane-backend:${LEADUP_PLANE_IMAGE_TAG:-preview}
     build: *leadup-backend-build
+    environment: *leadup-email-env
 
   beat-worker:
     image: leadup/plane-backend:${LEADUP_PLANE_IMAGE_TAG:-preview}
     build: *leadup-backend-build
+    environment: *leadup-email-env
 
   migrator:
     image: leadup/plane-backend:${LEADUP_PLANE_IMAGE_TAG:-preview}
     build: *leadup-backend-build
+    environment: *leadup-email-env
 
 volumes:
   transcription_cache:
