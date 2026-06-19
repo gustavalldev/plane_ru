@@ -11,48 +11,27 @@ import { usePathname } from "next/navigation";
 // plane imports
 import type { EditorRefApi } from "@plane/editor";
 import { useHashScroll } from "@plane/hooks";
-import { useTranslation } from "@plane/i18n";
 import { GlobeIcon, LockIcon } from "@plane/propel/icons";
 import { EIssueCommentAccessSpecifier } from "@plane/types";
 import type { TCommentsOperations, TIssueComment } from "@plane/types";
-import { calculateTimeAgo, cn, getFileURL, renderFormattedDate, renderFormattedTime } from "@plane/utils";
+import {
+  calculateTimeAgo,
+  cn,
+  getFileURL,
+  isCommentEmpty,
+  renderFormattedDate,
+  renderFormattedTime,
+} from "@plane/utils";
 // components
 import { LiteTextEditor } from "@/components/editor/lite-text";
 // local imports
 import { CommentReactions } from "../comment-reaction";
 import { CommentCardEditForm } from "./edit-form";
+import { VoiceMessageBubble } from "./voice-message-bubble";
+import { extractVoiceAttachments, stripVoiceContentFromHTML } from "./voice-message.helpers";
 import { EmojiReactionButton, EmojiReactionPicker } from "@plane/propel/emoji-reaction";
 import { Avatar, Tooltip } from "@plane/ui";
 import { useMember } from "@/hooks/store/use-member";
-
-type TVoiceAttachment = {
-  url: string;
-  name?: string;
-};
-
-const decodeHTMLAttribute = (value: string) =>
-  value
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&amp;/g, "&");
-
-const getHTMLAttribute = (tag: string, attribute: string) => {
-  const match = tag.match(new RegExp(`${attribute}=["']([^"']+)["']`, "i"));
-  return match?.[1] ? decodeHTMLAttribute(match[1]) : undefined;
-};
-
-const extractVoiceAttachments = (commentHTML: string | undefined): TVoiceAttachment[] => {
-  if (!commentHTML) return [];
-
-  return Array.from(commentHTML.matchAll(/<a\b[^>]*data-plane-voice-attachment=["']true["'][^>]*>/gi))
-    .map((match) => ({
-      url: getHTMLAttribute(match[0], "href") ?? "",
-      name: getHTMLAttribute(match[0], "data-plane-voice-name"),
-    }))
-    .filter((attachment) => !!attachment.url);
-};
 
 export type TCommentCardDisplayProps = {
   activityOperations: TCommentsOperations;
@@ -75,6 +54,7 @@ export const CommentCardDisplay = observer(function CommentCardDisplay(props: TC
     activityOperations,
     comment,
     disabled,
+    entityId,
     projectId,
     readOnlyEditorRef,
     showAccessSpecifier,
@@ -91,7 +71,6 @@ export const CommentCardDisplay = observer(function CommentCardDisplay(props: TC
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   // store hooks
   const { getUserDetails } = useMember();
-  const { t } = useTranslation();
   // derived values
   const userDetails = getUserDetails(comment?.actor);
   const displayName = comment?.actor_detail?.is_bot
@@ -136,6 +115,8 @@ export const CommentCardDisplay = observer(function CommentCardDisplay(props: TC
 
   const shouldRenderReactions = hasReactions && !disabled;
   const voiceAttachments = extractVoiceAttachments(comment.comment_html);
+  const visibleCommentHTML = stripVoiceContentFromHTML(comment.comment_html);
+  const hasVisibleComment = !isCommentEmpty(visibleCommentHTML);
 
   return (
     <div id={commentBlockId} className="relative flex flex-col gap-2">
@@ -192,34 +173,34 @@ export const CommentCardDisplay = observer(function CommentCardDisplay(props: TC
         />
       ) : (
         <>
-          <LiteTextEditor
-            editable={false}
-            ref={readOnlyEditorRef}
-            id={comment.id}
-            initialValue={comment.comment_html ?? ""}
-            workspaceId={workspaceId}
-            workspaceSlug={workspaceSlug}
-            containerClassName={cn("!py-1 transition-[border-color] duration-500", highlightClassName)}
-            projectId={projectId?.toString()}
-            displayConfig={{
-              fontSize: "small-font",
-            }}
-            parentClassName="border-none"
-          />
+          {hasVisibleComment && (
+            <LiteTextEditor
+              editable={false}
+              ref={readOnlyEditorRef}
+              id={comment.id}
+              initialValue={visibleCommentHTML}
+              workspaceId={workspaceId}
+              workspaceSlug={workspaceSlug}
+              containerClassName={cn("!py-1 transition-[border-color] duration-500", highlightClassName)}
+              projectId={projectId?.toString()}
+              displayConfig={{
+                fontSize: "small-font",
+              }}
+              parentClassName="border-none"
+            />
+          )}
           {voiceAttachments.length > 0 && (
             <div className="flex flex-col gap-2 px-2 pb-2">
               {voiceAttachments.map((attachment) => (
-                <div
+                <VoiceMessageBubble
                   key={attachment.url}
-                  className="flex flex-wrap items-center gap-2 rounded border border-subtle bg-surface-1 p-2"
-                >
-                  <span className="text-caption-sm-medium text-secondary">
-                    {attachment.name ?? t("issue.comments.voice.audio_title")}
-                  </span>
-                  <audio controls src={getFileURL(attachment.url)} className="h-8 max-w-full">
-                    <track kind="captions" />
-                  </audio>
-                </div>
+                  activityOperations={activityOperations}
+                  attachment={attachment}
+                  comment={comment}
+                  entityId={entityId}
+                  projectId={projectId}
+                  workspaceSlug={workspaceSlug}
+                />
               ))}
             </div>
           )}

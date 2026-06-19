@@ -11,7 +11,7 @@ import { useForm, Controller } from "react-hook-form";
 import { EIssueCommentAccessSpecifier } from "@plane/constants";
 import type { EditorRefApi } from "@plane/editor";
 import { useTranslation } from "@plane/i18n";
-import { Loader2, Mic, Square, Trash2, X } from "lucide-react";
+import { Loader2, Mic, Send, Square, Trash2, X } from "lucide-react";
 import type { TIssueComment, TCommentsOperations } from "@plane/types";
 import { cn, isCommentEmpty } from "@plane/utils";
 // components
@@ -20,7 +20,7 @@ import { LiteTextEditor } from "@/components/editor/lite-text";
 import { useWorkspace } from "@/hooks/store/use-workspace";
 // services
 import { FileService } from "@/services/file.service";
-import { IssueAttachmentService, IssueTranscriptionService } from "@/services/issue";
+import { IssueAttachmentService } from "@/services/issue";
 
 type TCommentCreate = {
   entityId: string;
@@ -34,19 +34,17 @@ type TCommentCreate = {
 // services
 const fileService = new FileService();
 const issueAttachmentService = new IssueAttachmentService();
-const issueTranscriptionService = new IssueTranscriptionService();
 
 const MAX_RECORDING_DURATION_SECONDS = 120;
 const VOICE_MIME_TYPES = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
 
-type TVoiceDraftStatus = "idle" | "recording" | "preview" | "transcribing" | "ready" | "uploading" | "error";
+type TVoiceDraftStatus = "idle" | "recording" | "preview" | "uploading" | "error";
 
 type TVoiceDraft = {
   status: TVoiceDraftStatus;
   duration: number;
   file?: File;
   previewUrl?: string;
-  transcript?: string;
   errorKey?: string;
   warningKey?: string;
 };
@@ -85,6 +83,13 @@ const appendCommentHTML = (currentHTML: string | undefined, blockHTML: string) =
   return `${currentHTML ?? ""}${blockHTML}`;
 };
 
+const buildVoiceMessageHTML = (assetUrl: string, fileName: string, duration: number) =>
+  `<div data-plane-voice-message="true" data-plane-voice-duration="${duration}" data-plane-voice-name="${escapeHTML(
+    fileName
+  )}"><a href="${escapeHTML(assetUrl)}" data-plane-voice-attachment="true" data-plane-voice-name="${escapeHTML(
+    fileName
+  )}">Голосовое сообщение</a></div>`;
+
 export const CommentCreate = observer(function CommentCreate(props: TCommentCreate) {
   const {
     workspaceSlug,
@@ -115,7 +120,6 @@ export const CommentCreate = observer(function CommentCreate(props: TCommentCrea
     handleSubmit,
     control,
     watch,
-    setValue,
     formState: { isSubmitting },
     reset,
   } = useForm<Partial<TIssueComment>>({
@@ -142,26 +146,6 @@ export const CommentCreate = observer(function CommentCreate(props: TCommentCrea
     stopMediaStream();
     recordingChunksRef.current = [];
     setVoiceDraft({ status: "idle", duration: 0 });
-  };
-
-  const buildTranscriptHTML = (transcript: string) =>
-    `<p data-plane-voice-transcript="true"><strong>${escapeHTML(
-      t("issue.comments.voice.transcript_label")
-    )}:</strong> ${escapeHTML(transcript)}</p>`;
-
-  const buildAudioHTML = (assetUrl: string, fileName: string) =>
-    `<p><a href="${escapeHTML(assetUrl)}" data-plane-voice-attachment="true" data-plane-voice-name="${escapeHTML(
-      fileName
-    )}">${escapeHTML(t("issue.comments.voice.audio_link"))}</a></p>`;
-
-  const insertTranscriptIntoEditor = (transcript: string) => {
-    const currentHTML = editorRef.current?.getDocument().html ?? watch("comment_html") ?? "<p></p>";
-    const escapedTranscript = escapeHTML(transcript);
-    if (currentHTML.includes(escapedTranscript)) return;
-
-    const nextHTML = appendCommentHTML(currentHTML, buildTranscriptHTML(transcript));
-    editorRef.current?.setEditorValue(nextHTML);
-    setValue("comment_html", nextHTML, { shouldDirty: true });
   };
 
   const startRecording = async () => {
@@ -253,32 +237,6 @@ export const CommentCreate = observer(function CommentCreate(props: TCommentCrea
     if (mediaRecorderRef.current?.state === "recording") mediaRecorderRef.current.stop();
   };
 
-  const transcribeRecording = async () => {
-    if (!voiceDraft.file || !projectId) return;
-    setVoiceDraft((current) => ({ ...current, status: "transcribing", errorKey: undefined }));
-    try {
-      const response = await issueTranscriptionService.transcribeIssueCommentAudio(
-        workspaceSlug,
-        projectId.toString(),
-        entityId,
-        voiceDraft.file
-      );
-      const transcript = response.text.trim();
-      if (!transcript) {
-        setVoiceDraft((current) => ({
-          ...current,
-          status: "error",
-          errorKey: "issue.comments.voice.errors.empty_transcript",
-        }));
-        return;
-      }
-      insertTranscriptIntoEditor(transcript);
-      setVoiceDraft((current) => ({ ...current, status: "ready", transcript }));
-    } catch {
-      setVoiceDraft((current) => ({ ...current, status: "error", errorKey: "issue.comments.voice.errors.transcribe" }));
-    }
-  };
-
   useEffect(
     () => () => {
       if (voiceDraft.previewUrl) URL.revokeObjectURL(voiceDraft.previewUrl);
@@ -289,12 +247,11 @@ export const CommentCreate = observer(function CommentCreate(props: TCommentCrea
   );
 
   const onSubmit = async (formData: Partial<TIssueComment>) => {
-    const voiceFile = voiceDraft.status === "ready" ? voiceDraft.file : undefined;
-    const voiceTranscript = voiceDraft.status === "ready" ? voiceDraft.transcript : undefined;
+    const voiceFile = voiceDraft.status === "preview" ? voiceDraft.file : undefined;
 
     try {
       let submitData = formData;
-      if (voiceFile && voiceTranscript && projectId) {
+      if (voiceFile && projectId) {
         setVoiceDraft((current) => ({ ...current, status: "uploading" }));
         const attachment = await issueAttachmentService.uploadIssueAttachment(
           workspaceSlug,
@@ -303,16 +260,15 @@ export const CommentCreate = observer(function CommentCreate(props: TCommentCrea
           voiceFile
         );
 
-        const currentHTML = submitData.comment_html ?? "<p></p>";
-        const escapedTranscript = escapeHTML(voiceTranscript);
-        const htmlWithTranscript = currentHTML.includes(escapedTranscript)
-          ? currentHTML
-          : appendCommentHTML(currentHTML, buildTranscriptHTML(voiceTranscript));
         submitData = {
           ...submitData,
           comment_html: appendCommentHTML(
-            htmlWithTranscript,
-            buildAudioHTML(attachment.asset_url, attachment.attributes.name ?? voiceFile.name)
+            submitData.comment_html ?? "<p></p>",
+            buildVoiceMessageHTML(
+              attachment.asset_url,
+              attachment.attributes.name ?? voiceFile.name,
+              voiceDraft.duration
+            )
           ),
         };
       }
@@ -320,7 +276,11 @@ export const CommentCreate = observer(function CommentCreate(props: TCommentCrea
       const comment = await activityOperations.createComment(submitData);
       if (!comment?.id) {
         if (voiceFile)
-          setVoiceDraft((current) => ({ ...current, status: "ready", errorKey: "issue.comments.voice.errors.submit" }));
+          setVoiceDraft((current) => ({
+            ...current,
+            status: "preview",
+            errorKey: "issue.comments.voice.errors.submit",
+          }));
         return;
       }
 
@@ -346,13 +306,13 @@ export const CommentCreate = observer(function CommentCreate(props: TCommentCrea
     } catch (error) {
       console.error(error);
       if (voiceFile)
-        setVoiceDraft((current) => ({ ...current, status: "ready", errorKey: "issue.comments.voice.errors.submit" }));
+        setVoiceDraft((current) => ({ ...current, status: "preview", errorKey: "issue.comments.voice.errors.submit" }));
     }
   };
 
   const commentHTML = watch("comment_html");
-  const isVoiceSubmitReady = voiceDraft.status === "ready" && !!voiceDraft.file && !!voiceDraft.transcript;
-  const isVoiceBusy = voiceDraft.status === "transcribing" || voiceDraft.status === "uploading";
+  const isVoiceSubmitReady = voiceDraft.status === "preview" && !!voiceDraft.file;
+  const isVoiceBusy = voiceDraft.status === "uploading";
   const isEmpty = isCommentEmpty(commentHTML ?? undefined) && !isVoiceSubmitReady;
 
   return (
@@ -433,68 +393,55 @@ export const CommentCreate = observer(function CommentCreate(props: TCommentCrea
         )}
 
         {voiceDraft.status === "recording" && (
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-red-500 inline-flex items-center gap-2 font-medium">
-              <span className="bg-red-500 size-2 rounded-full" />
+          <div className="border-red-500/30 bg-red-500/10 flex max-w-full items-center gap-2 rounded-full border px-2 py-1">
+            <span className="text-red-500 inline-flex min-w-0 items-center gap-2 font-medium">
+              <span className="bg-red-500 size-2 shrink-0 rounded-full" />
               {t("issue.comments.voice.recording", { duration: formatDuration(voiceDraft.duration) })}
             </span>
             <button
               type="button"
               onClick={stopRecording}
-              className="inline-flex items-center gap-1 rounded border border-subtle px-2 py-1 text-secondary hover:bg-surface-2"
+              className="inline-flex size-7 items-center justify-center rounded-full bg-accent-primary text-primary hover:bg-accent-primary/80"
+              aria-label="Остановить запись"
             >
               <Square className="size-3.5" />
-              <span>{t("issue.comments.voice.stop")}</span>
             </button>
             <button
               type="button"
               onClick={clearVoiceDraft}
-              className="inline-flex items-center gap-1 rounded border border-subtle px-2 py-1 text-secondary hover:bg-surface-2"
+              className="inline-flex size-7 items-center justify-center rounded-full border border-subtle text-secondary hover:bg-surface-2"
+              aria-label={t("issue.comments.voice.cancel")}
             >
               <X className="size-3.5" />
-              <span>{t("issue.comments.voice.cancel")}</span>
             </button>
           </div>
         )}
 
-        {["preview", "transcribing", "ready", "uploading"].includes(voiceDraft.status) && voiceDraft.previewUrl && (
-          <div className="flex w-full flex-wrap items-center gap-2 rounded border border-subtle bg-surface-1 p-2">
-            <audio controls src={voiceDraft.previewUrl} className="h-8 max-w-full">
-              <track kind="captions" />
-            </audio>
-            <span className="text-tertiary">{formatDuration(voiceDraft.duration)}</span>
+        {["preview", "uploading"].includes(voiceDraft.status) && voiceDraft.previewUrl && (
+          <div className="flex w-full flex-wrap items-center gap-2 rounded-lg border border-subtle bg-surface-1 p-2 sm:w-auto">
+            <div className="flex min-w-0 flex-1 items-center gap-2 sm:flex-none">
+              <Mic className="size-4 shrink-0 text-accent-primary" />
+              <audio controls src={voiceDraft.previewUrl} className="h-8 max-w-full min-w-0 sm:w-56">
+                <track kind="captions" />
+              </audio>
+              <span className="shrink-0 text-tertiary">{formatDuration(voiceDraft.duration)}</span>
+            </div>
             {voiceDraft.warningKey && <span className="text-amber-600">{t(voiceDraft.warningKey)}</span>}
             {voiceDraft.errorKey && <span className="text-red-600">{t(voiceDraft.errorKey)}</span>}
-            {voiceDraft.status === "preview" && (
-              <button
-                type="button"
-                onClick={transcribeRecording}
-                disabled={isSubmitting}
-                className="inline-flex items-center gap-1 rounded bg-accent-primary px-2 py-1 text-primary hover:bg-accent-primary/80 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                <Mic className="size-3.5" />
-                <span>{t("issue.comments.voice.transcribe")}</span>
-              </button>
-            )}
-            {(voiceDraft.status === "transcribing" || voiceDraft.status === "uploading") && (
+            {voiceDraft.status === "uploading" && (
               <span className="inline-flex items-center gap-1 text-tertiary">
                 <Loader2 className="size-3.5 animate-spin" />
-                {voiceDraft.status === "transcribing"
-                  ? t("issue.comments.voice.transcribing")
-                  : t("issue.comments.voice.uploading")}
+                {t("issue.comments.voice.uploading")}
               </span>
             )}
-            {voiceDraft.status === "ready" && (
-              <span className="text-green-600 font-medium">{t("issue.comments.voice.ready")}</span>
-            )}
-            {voiceDraft.status === "ready" && (
+            {voiceDraft.status === "preview" && (
               <button
                 type="button"
                 onClick={(e) => handleSubmit(onSubmit)(e)}
                 disabled={isSubmitting || isVoiceBusy}
                 className="inline-flex items-center gap-1 rounded bg-accent-primary px-2 py-1 text-primary hover:bg-accent-primary/80 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                <Mic className="size-3.5" />
+                <Send className="size-3.5" />
                 <span>{t("issue.comments.voice.send")}</span>
               </button>
             )}
