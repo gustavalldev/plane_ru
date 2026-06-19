@@ -333,6 +333,10 @@ CELERY_IMPORTS = (
 )
 
 FILE_SIZE_LIMIT = int(os.environ.get("FILE_SIZE_LIMIT", 5242880))
+TRANSCRIPTION_SERVICE_URL = os.environ.get("TRANSCRIPTION_SERVICE_URL", "")
+TRANSCRIPTION_API_TOKEN = os.environ.get("TRANSCRIPTION_API_TOKEN", "")
+TRANSCRIPTION_UPLOAD_SIZE_LIMIT = int(os.environ.get("TRANSCRIPTION_UPLOAD_SIZE_LIMIT", 25 * 1024 * 1024))
+TRANSCRIPTION_REQUEST_TIMEOUT = int(os.environ.get("TRANSCRIPTION_REQUEST_TIMEOUT", 120))
 
 # Unsplash Access key
 UNSPLASH_ACCESS_KEY = os.environ.get("UNSPLASH_ACCESS_KEY")
@@ -469,9 +473,11 @@ ATTACHMENT_MIME_TYPES = [
     # Open Office Bae
     "application/vnd.oasis.opendocument.database",
     # Audio
+    "audio/webm",
     "audio/mpeg",
     "audio/wav",
     "audio/ogg",
+    "audio/mp4",
     "audio/midi",
     "audio/x-midi",
     "audio/aac",

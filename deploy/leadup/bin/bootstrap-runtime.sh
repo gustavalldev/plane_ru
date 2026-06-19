@@ -103,6 +103,7 @@ SECRET_KEY_VALUE="$(grep -E '^SECRET_KEY=' variables.env | cut -d= -f2-)"
 AWS_ACCESS_KEY_ID_VALUE="$(grep -E '^AWS_ACCESS_KEY_ID=' variables.env | cut -d= -f2-)"
 AWS_SECRET_ACCESS_KEY_VALUE="$(grep -E '^AWS_SECRET_ACCESS_KEY=' variables.env | cut -d= -f2-)"
 LIVE_SERVER_SECRET_KEY_VALUE="$(grep -E '^LIVE_SERVER_SECRET_KEY=' variables.env | cut -d= -f2-)"
+TRANSCRIPTION_API_TOKEN_VALUE="$(grep -E '^TRANSCRIPTION_API_TOKEN=' variables.env | cut -d= -f2- || true)"
 
 if [[ "${POSTGRES_PASSWORD_VALUE}" == "plane" || -z "${POSTGRES_PASSWORD_VALUE}" ]]; then
   POSTGRES_PASSWORD_VALUE="$(random_hex 24)"
@@ -126,6 +127,10 @@ fi
 
 if [[ "${LIVE_SERVER_SECRET_KEY_VALUE}" == "2FiJk1U2aiVPEQtzLehYGlTSnTnrs7LW" || -z "${LIVE_SERVER_SECRET_KEY_VALUE}" ]]; then
   LIVE_SERVER_SECRET_KEY_VALUE="$(random_urlsafe 48)"
+fi
+
+if [[ -z "${TRANSCRIPTION_API_TOKEN_VALUE}" ]]; then
+  TRANSCRIPTION_API_TOKEN_VALUE="$(random_urlsafe 48)"
 fi
 
 set_env APP_DOMAIN "${DOMAIN}"
@@ -154,6 +159,13 @@ set_env MINIO_ENDPOINT_SSL "0"
 set_env FILE_SIZE_LIMIT "52428800"
 set_env API_KEY_RATE_LIMIT "60/minute"
 set_env LIVE_SERVER_SECRET_KEY "${LIVE_SERVER_SECRET_KEY_VALUE}"
+set_env TRANSCRIPTION_SERVICE_URL "http://transcription:8000"
+set_env TRANSCRIPTION_API_TOKEN "${TRANSCRIPTION_API_TOKEN_VALUE}"
+set_env TRANSCRIPTION_UPLOAD_SIZE_LIMIT "26214400"
+set_env WHISPER_MODEL_SIZE "small"
+set_env WHISPER_DEVICE "cpu"
+set_env WHISPER_COMPUTE_TYPE "int8"
+set_env WHISPER_LANGUAGE "ru"
 set_env TRUSTED_PROXIES "127.0.0.1"
 set_env CERT_EMAIL ""
 set_env CERT_ACME_CA "https://acme-v02.api.letsencrypt.org/directory"

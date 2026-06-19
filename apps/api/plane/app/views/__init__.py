@@ -138,6 +138,8 @@ from .issue.attachment import (
     IssueAttachmentV2Endpoint,
 )
 
+from .issue.transcription import IssueVoiceTranscriptionEndpoint
+
 from .issue.comment import IssueCommentViewSet, CommentReactionViewSet
 
 from .issue.label import LabelViewSet, BulkCreateIssueLabelsEndpoint

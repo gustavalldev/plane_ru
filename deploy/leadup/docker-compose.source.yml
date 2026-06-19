@@ -19,6 +19,23 @@ x-leadup-backend-build: &leadup-backend-build
     DOCKER_BUILDKIT: 1
 
 services:
+  transcription:
+    image: leadup/plane-transcription:${LEADUP_PLANE_IMAGE_TAG:-preview}
+    build:
+      context: ${PLANE_SOURCE_DIR:-/opt/leadup_plane}/deploy/leadup/transcription
+      dockerfile: Dockerfile
+    environment:
+      TRANSCRIPTION_API_TOKEN: ${TRANSCRIPTION_API_TOKEN:?TRANSCRIPTION_API_TOKEN is required}
+      TRANSCRIPTION_UPLOAD_SIZE_LIMIT: ${TRANSCRIPTION_UPLOAD_SIZE_LIMIT:-26214400}
+      WHISPER_MODEL_SIZE: ${WHISPER_MODEL_SIZE:-small}
+      WHISPER_DEVICE: ${WHISPER_DEVICE:-cpu}
+      WHISPER_COMPUTE_TYPE: ${WHISPER_COMPUTE_TYPE:-int8}
+      WHISPER_LANGUAGE: ${WHISPER_LANGUAGE:-ru}
+      HF_HOME: /models/huggingface
+    volumes:
+      - transcription_cache:/models
+    restart: unless-stopped
+
   web:
     image: leadup/plane-frontend:${LEADUP_PLANE_IMAGE_TAG:-preview}
     build:
@@ -36,6 +53,12 @@ services:
   api:
     image: leadup/plane-backend:${LEADUP_PLANE_IMAGE_TAG:-preview}
     build: *leadup-backend-build
+    environment:
+      TRANSCRIPTION_SERVICE_URL: ${TRANSCRIPTION_SERVICE_URL:-http://transcription:8000}
+      TRANSCRIPTION_API_TOKEN: ${TRANSCRIPTION_API_TOKEN:?TRANSCRIPTION_API_TOKEN is required}
+      TRANSCRIPTION_UPLOAD_SIZE_LIMIT: ${TRANSCRIPTION_UPLOAD_SIZE_LIMIT:-26214400}
+    depends_on:
+      - transcription
 
   worker:
     image: leadup/plane-backend:${LEADUP_PLANE_IMAGE_TAG:-preview}
@@ -48,3 +71,6 @@ services:
   migrator:
     image: leadup/plane-backend:${LEADUP_PLANE_IMAGE_TAG:-preview}
     build: *leadup-backend-build
+
+volumes:
+  transcription_cache:

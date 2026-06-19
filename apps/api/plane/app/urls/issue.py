@@ -26,6 +26,7 @@ from plane.app.views import (
     IssuePaginatedViewSet,
     IssueDetailEndpoint,
     IssueAttachmentV2Endpoint,
+    IssueVoiceTranscriptionEndpoint,
     IssueBulkUpdateDateEndpoint,
     IssueVersionEndpoint,
     WorkItemDescriptionVersionEndpoint,
@@ -157,6 +158,11 @@ urlpatterns = [
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/",
         IssueCommentViewSet.as_view({"get": "list", "post": "create"}),
         name="project-issue-comment",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/voice-transcription/",
+        IssueVoiceTranscriptionEndpoint.as_view(),
+        name="project-issue-voice-transcription",
     ),
     path(
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/comments/<uuid:pk>/",

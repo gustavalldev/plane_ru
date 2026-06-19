@@ -148,6 +148,29 @@
             }
           }
         }
+      },
+      "voice": {
+        "record": "Record voice",
+        "recording": "Recording {{duration}}",
+        "stop": "Stop",
+        "cancel": "Cancel",
+        "dismiss": "Dismiss",
+        "transcribe": "Transcribe",
+        "transcribing": "Transcribing...",
+        "uploading": "Uploading audio...",
+        "ready": "Transcript ready",
+        "send": "Send voice comment",
+        "transcript_label": "Transcript",
+        "audio_link": "Voice message",
+        "audio_title": "Voice message",
+        "errors": {
+          "issue_only": "Voice comments are available only for project issues.",
+          "unsupported": "Voice recording is not supported in this browser.",
+          "permission": "Microphone access was denied or unavailable.",
+          "empty": "Recording is empty. Try again.",
+          "empty_transcript": "Could not detect speech in this recording.",
+          "transcribe": "Transcription failed. Try again later."
+        }
       }
     },
     "empty_state": {
