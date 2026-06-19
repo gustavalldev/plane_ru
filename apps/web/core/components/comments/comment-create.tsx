@@ -11,7 +11,8 @@ import { useForm, Controller } from "react-hook-form";
 import { EIssueCommentAccessSpecifier } from "@plane/constants";
 import type { EditorRefApi } from "@plane/editor";
 import { useTranslation } from "@plane/i18n";
-import { Loader2, Mic, Send, Square, Trash2, X } from "lucide-react";
+import { Loader2, Mic, Square, Trash2, X } from "lucide-react";
+import { Tooltip } from "@plane/propel/tooltip";
 import type { TIssueComment, TCommentsOperations } from "@plane/types";
 import { cn, isCommentEmpty } from "@plane/utils";
 // components
@@ -314,6 +315,87 @@ export const CommentCreate = observer(function CommentCreate(props: TCommentCrea
   const isVoiceSubmitReady = voiceDraft.status === "preview" && !!voiceDraft.file;
   const isVoiceBusy = voiceDraft.status === "uploading";
   const isEmpty = isCommentEmpty(commentHTML ?? undefined) && !isVoiceSubmitReady;
+  const canStartVoiceRecording = voiceDraft.status === "idle" || voiceDraft.status === "error";
+  const voiceToolbarActions = canStartVoiceRecording ? (
+    <Tooltip tooltipContent={t("issue.comments.voice.record")}>
+      <button
+        type="button"
+        onClick={startRecording}
+        disabled={isSubmitting || isVoiceBusy}
+        className="grid aspect-square place-items-center rounded-xs p-0.5 text-placeholder hover:bg-layer-1 disabled:cursor-not-allowed disabled:opacity-60"
+        aria-label={t("issue.comments.voice.record")}
+      >
+        <Mic className="h-3.5 w-3.5" strokeWidth={2.5} />
+      </button>
+    </Tooltip>
+  ) : null;
+  const voiceToolbarFooter =
+    voiceDraft.status === "idle" ? null : (
+      <div className="text-xs flex flex-wrap items-center gap-2 pt-2 text-secondary">
+        {voiceDraft.status === "recording" && (
+          <div className="border-red-500/30 bg-red-500/10 flex max-w-full items-center gap-2 rounded-full border px-2 py-1">
+            <span className="text-red-500 inline-flex min-w-0 items-center gap-2 font-medium">
+              <span className="bg-red-500 size-2 shrink-0 rounded-full" />
+              {t("issue.comments.voice.recording", { duration: formatDuration(voiceDraft.duration) })}
+            </span>
+            <button
+              type="button"
+              onClick={stopRecording}
+              className="inline-flex size-7 items-center justify-center rounded-full bg-accent-primary text-primary hover:bg-accent-primary/80"
+              aria-label={t("issue.comments.voice.stop")}
+            >
+              <Square className="size-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={clearVoiceDraft}
+              className="inline-flex size-7 items-center justify-center rounded-full border border-subtle text-secondary hover:bg-surface-2"
+              aria-label={t("issue.comments.voice.cancel")}
+            >
+              <X className="size-3.5" />
+            </button>
+          </div>
+        )}
+
+        {["preview", "uploading"].includes(voiceDraft.status) && voiceDraft.previewUrl && (
+          <div className="flex w-full flex-wrap items-center gap-2 rounded-lg border border-subtle bg-surface-1 p-2 sm:w-auto">
+            <div className="flex min-w-0 flex-1 items-center gap-2 sm:flex-none">
+              <Mic className="size-4 shrink-0 text-accent-primary" />
+              <audio controls src={voiceDraft.previewUrl} className="h-8 max-w-full min-w-0 sm:w-56">
+                <track kind="captions" />
+              </audio>
+              <span className="shrink-0 text-tertiary">{formatDuration(voiceDraft.duration)}</span>
+            </div>
+            {voiceDraft.warningKey && <span className="text-amber-600">{t(voiceDraft.warningKey)}</span>}
+            {voiceDraft.errorKey && <span className="text-red-600">{t(voiceDraft.errorKey)}</span>}
+            {voiceDraft.status === "uploading" && (
+              <span className="inline-flex items-center gap-1 text-tertiary">
+                <Loader2 className="size-3.5 animate-spin" />
+                {t("issue.comments.voice.uploading")}
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={clearVoiceDraft}
+              disabled={isSubmitting || isVoiceBusy}
+              className="inline-flex items-center gap-1 rounded border border-subtle px-2 py-1 text-secondary hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <Trash2 className="size-3.5" />
+              <span>{t("issue.comments.voice.cancel")}</span>
+            </button>
+          </div>
+        )}
+
+        {voiceDraft.status === "error" && voiceDraft.errorKey && (
+          <div className="border-red-500/30 bg-red-500/10 text-red-600 flex flex-wrap items-center gap-2 rounded border px-2 py-1">
+            <span>{t(voiceDraft.errorKey)}</span>
+            <button type="button" onClick={clearVoiceDraft} className="font-medium hover:underline">
+              {t("issue.comments.voice.dismiss")}
+            </button>
+          </div>
+        )}
+      </div>
+    );
 
   return (
     <div
@@ -359,6 +441,7 @@ export const CommentCreate = observer(function CommentCreate(props: TCommentCrea
                 accessSpecifier={accessValue ?? EIssueCommentAccessSpecifier.INTERNAL}
                 handleAccessChange={onAccessChange}
                 isSubmitting={isSubmitting}
+                isCommentEmpty={isEmpty}
                 uploadFile={async (blockId, file) => {
                   const { asset_id } = await activityOperations.uploadCommentAsset(blockId, file);
                   setUploadedAssetIds((prev) => [...prev, asset_id]);
@@ -374,98 +457,13 @@ export const CommentCreate = observer(function CommentCreate(props: TCommentCrea
                 displayConfig={{
                   fontSize: "small-font",
                 }}
+                toolbarActions={voiceToolbarActions}
+                toolbarFooter={voiceToolbarFooter}
               />
             )}
           />
         )}
       />
-      <div className="text-xs flex flex-wrap items-center gap-2 px-2 pb-2 text-secondary">
-        {voiceDraft.status === "idle" && (
-          <button
-            type="button"
-            onClick={startRecording}
-            disabled={isSubmitting || isVoiceBusy}
-            className="inline-flex items-center gap-1 rounded border border-subtle px-2 py-1 text-secondary hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            <Mic className="size-3.5" />
-            <span>{t("issue.comments.voice.record")}</span>
-          </button>
-        )}
-
-        {voiceDraft.status === "recording" && (
-          <div className="border-red-500/30 bg-red-500/10 flex max-w-full items-center gap-2 rounded-full border px-2 py-1">
-            <span className="text-red-500 inline-flex min-w-0 items-center gap-2 font-medium">
-              <span className="bg-red-500 size-2 shrink-0 rounded-full" />
-              {t("issue.comments.voice.recording", { duration: formatDuration(voiceDraft.duration) })}
-            </span>
-            <button
-              type="button"
-              onClick={stopRecording}
-              className="inline-flex size-7 items-center justify-center rounded-full bg-accent-primary text-primary hover:bg-accent-primary/80"
-              aria-label="Остановить запись"
-            >
-              <Square className="size-3.5" />
-            </button>
-            <button
-              type="button"
-              onClick={clearVoiceDraft}
-              className="inline-flex size-7 items-center justify-center rounded-full border border-subtle text-secondary hover:bg-surface-2"
-              aria-label={t("issue.comments.voice.cancel")}
-            >
-              <X className="size-3.5" />
-            </button>
-          </div>
-        )}
-
-        {["preview", "uploading"].includes(voiceDraft.status) && voiceDraft.previewUrl && (
-          <div className="flex w-full flex-wrap items-center gap-2 rounded-lg border border-subtle bg-surface-1 p-2 sm:w-auto">
-            <div className="flex min-w-0 flex-1 items-center gap-2 sm:flex-none">
-              <Mic className="size-4 shrink-0 text-accent-primary" />
-              <audio controls src={voiceDraft.previewUrl} className="h-8 max-w-full min-w-0 sm:w-56">
-                <track kind="captions" />
-              </audio>
-              <span className="shrink-0 text-tertiary">{formatDuration(voiceDraft.duration)}</span>
-            </div>
-            {voiceDraft.warningKey && <span className="text-amber-600">{t(voiceDraft.warningKey)}</span>}
-            {voiceDraft.errorKey && <span className="text-red-600">{t(voiceDraft.errorKey)}</span>}
-            {voiceDraft.status === "uploading" && (
-              <span className="inline-flex items-center gap-1 text-tertiary">
-                <Loader2 className="size-3.5 animate-spin" />
-                {t("issue.comments.voice.uploading")}
-              </span>
-            )}
-            {voiceDraft.status === "preview" && (
-              <button
-                type="button"
-                onClick={(e) => handleSubmit(onSubmit)(e)}
-                disabled={isSubmitting || isVoiceBusy}
-                className="inline-flex items-center gap-1 rounded bg-accent-primary px-2 py-1 text-primary hover:bg-accent-primary/80 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                <Send className="size-3.5" />
-                <span>{t("issue.comments.voice.send")}</span>
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={clearVoiceDraft}
-              disabled={isSubmitting || isVoiceBusy}
-              className="inline-flex items-center gap-1 rounded border border-subtle px-2 py-1 text-secondary hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              <Trash2 className="size-3.5" />
-              <span>{t("issue.comments.voice.cancel")}</span>
-            </button>
-          </div>
-        )}
-
-        {voiceDraft.status === "error" && voiceDraft.errorKey && (
-          <div className="border-red-500/30 bg-red-500/10 text-red-600 flex flex-wrap items-center gap-2 rounded border px-2 py-1">
-            <span>{t(voiceDraft.errorKey)}</span>
-            <button type="button" onClick={clearVoiceDraft} className="font-medium hover:underline">
-              {t("issue.comments.voice.dismiss")}
-            </button>
-          </div>
-        )}
-      </div>
     </div>
   );
 });

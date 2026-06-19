@@ -27,6 +27,10 @@ import { WorkspaceService } from "@/services/workspace.service";
 import { LiteToolbar } from "./lite-toolbar";
 const workspaceService = new WorkspaceService();
 
+function isMutableEditorRef(ref: React.ForwardedRef<EditorRefApi>): ref is React.MutableRefObject<EditorRefApi | null> {
+  return !!ref && typeof ref === "object" && "current" in ref;
+}
+
 type LiteTextEditorWrapperProps = MakeOptional<
   Omit<ILiteTextEditorProps, "fileHandler" | "mentionHandler" | "extendedEditorProps">,
   "disabledExtensions" | "flaggedExtensions" | "getEditorMetaData"
@@ -45,6 +49,9 @@ type LiteTextEditorWrapperProps = MakeOptional<
   parentClassName?: string;
   editorClassName?: string;
   submitButtonText?: string;
+  isCommentEmpty?: boolean;
+  toolbarActions?: React.ReactNode;
+  toolbarFooter?: React.ReactNode;
 } & (
     | {
         editable: false;
@@ -81,6 +88,9 @@ export const LiteTextEditor = React.forwardRef(function LiteTextEditor(
     editorClassName = "",
     showPlaceholderOnEmpty = true,
     submitButtonText = "common.comment",
+    isCommentEmpty: isCommentEmptyProp,
+    toolbarActions,
+    toolbarFooter,
     ...rest
   } = props;
   // states
@@ -111,11 +121,8 @@ export const LiteTextEditor = React.forwardRef(function LiteTextEditor(
   });
   // editor config
   const { getEditorFileHandlers } = useEditorConfig();
-  function isMutableRefObject<T>(ref: React.ForwardedRef<T>): ref is React.MutableRefObject<T | null> {
-    return !!ref && typeof ref === "object" && "current" in ref;
-  }
   // derived values
-  const isEmpty = isCommentEmpty(props.initialValue);
+  const isEmpty = isCommentEmptyProp ?? isCommentEmpty(props.initialValue);
 
   return (
     <div
@@ -148,7 +155,7 @@ export const LiteTextEditor = React.forwardRef(function LiteTextEditor(
             getEditorMetaData={getEditorMetaData}
             handleEditorReady={(ready) => {
               if (ready) {
-                setEditorRef(isMutableRefObject<EditorRefApi>(ref) ? ref.current : null);
+                setEditorRef(isMutableEditorRef(ref) ? ref.current : null);
               }
             }}
             mentionHandler={{
@@ -217,9 +224,11 @@ export const LiteTextEditor = React.forwardRef(function LiteTextEditor(
             editorRef={editorRef}
             showSubmitButton={showSubmitButton}
             submitButtonText={submitButtonText}
+            toolbarActions={toolbarActions}
           />
         </div>
       )}
+      {toolbarFooter}
     </div>
   );
 });

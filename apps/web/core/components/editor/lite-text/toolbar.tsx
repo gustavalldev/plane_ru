@@ -34,6 +34,7 @@ type Props = {
   showSubmitButton: boolean;
   editorRef: EditorRefApi | null;
   submitButtonText?: string;
+  toolbarActions?: React.ReactNode;
 };
 
 type TCommentAccessType = {
@@ -70,6 +71,7 @@ export function IssueCommentToolbar(props: Props) {
     showSubmitButton,
     editorRef,
     submitButtonText = "common.comment",
+    toolbarActions,
   } = props;
   // State to manage active states of toolbar items
   const [activeStates, setActiveStates] = useState<Record<string, boolean>>({});
@@ -174,6 +176,9 @@ export function IssueCommentToolbar(props: Props) {
               })}
             </div>
           ))}
+          {toolbarActions && (
+            <div className="flex items-stretch gap-0.5 border-r border-subtle px-2.5">{toolbarActions}</div>
+          )}
         </div>
         {showSubmitButton && (
           <div className="sticky right-1">
