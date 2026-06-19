@@ -66,8 +66,8 @@ export const PagesListMainContent = observer(function PagesListMainContent(props
       .catch((err) => {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: err?.data?.error || "Page could not be created. Please try again.",
+          title: t("common.toast.error"),
+          message: err?.data?.error || t("wiki_collections.toasts.create_page_error"),
         });
       })
       .finally(() => setIsCreatingPage(false));

@@ -53,6 +53,49 @@
       "1_week": "1 неделя",
       "2_weeks": "2 недели",
       "custom": "Другое"
+    },
+    "card": {
+      "actions": {
+        "marked_duplicate": "отметил(а), что этот рабочий элемент дубликат",
+        "marked_not_duplicate": "отметил(а), что этот рабочий элемент не дубликат",
+        "added_assignee": "добавил(а) исполнителя",
+        "removed_assignee": "удалил(а) исполнителя",
+        "set_start_date": "установил(а) дату начала",
+        "removed_start_date": "удалил(а) дату начала",
+        "set_due_date": "установил(а) срок",
+        "removed_due_date": "удалил(а) срок",
+        "added_label": "добавил(а) метку",
+        "removed_label": "удалил(а) метку",
+        "added_parent": "добавил(а) родительский элемент",
+        "removed_parent": "удалил(а) родительский элемент",
+        "marked_related": "отметил(а), что этот рабочий элемент связан с",
+        "commented": "прокомментировал(а)",
+        "restored_work_item": "восстановил(а) рабочий элемент",
+        "archived_work_item": "архивировал(а) рабочий элемент"
+      },
+      "values": {
+        "assigned_work_item": "рабочий элемент и назначил(а) его вам",
+        "work_item": "рабочий элемент"
+      },
+      "fallback": {
+        "verbs": {
+          "created": "создал(а)",
+          "updated": "обновил(а)",
+          "deleted": "удалил(а)"
+        },
+        "fields": {
+          "attachment": "вложение",
+          "cycle": "цикл",
+          "description": "описание",
+          "estimate": "оценку",
+          "link": "ссылку",
+          "module": "модуль",
+          "name": "название",
+          "priority": "приоритет",
+          "state": "статус"
+        }
+      },
+      "connector_to": "к"
     }
   }
 }

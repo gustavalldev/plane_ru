@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 import { observer } from "mobx-react";
 // plane imports
 import type { EProjectFeatureKey } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
 import { Breadcrumbs } from "@plane/ui";
 // components
 import { BreadcrumbLink } from "@/components/common/breadcrumb-link";
@@ -30,6 +31,7 @@ export const ProjectFeatureBreadcrumb = observer(function ProjectFeatureBreadcru
 ) {
   const { workspaceSlug, projectId, featureKey, isLast = false, additionalNavigationItems } = props;
   // store hooks
+  const { t } = useTranslation();
   const { getPartialProjectById } = useProject();
   // derived values
   const project = getPartialProjectById(projectId);
@@ -43,7 +45,7 @@ export const ProjectFeatureBreadcrumb = observer(function ProjectFeatureBreadcru
 
   const currentNavigationItem = allNavigationItems.find((item) => item.key === featureKey);
   const icon = currentNavigationItem?.icon as ReactNode;
-  const name = currentNavigationItem?.name;
+  const name = currentNavigationItem?.i18n_key ? t(currentNavigationItem.i18n_key) : currentNavigationItem?.name;
   const href = currentNavigationItem?.href;
 
   return (

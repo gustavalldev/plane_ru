@@ -8,6 +8,7 @@
   },
   "project_cycles": {
     "add_cycle": "Добавить цикл",
+    "work_items_count": "В этом цикле рабочих элементов: {count}",
     "more_details": "Подробнее",
     "cycle": "Цикл",
     "update_cycle": "Обновить цикл",
@@ -36,7 +37,9 @@
       "current": "Текущий",
       "labels": "Метки",
       "trailing": "Отставание",
-      "leading": "Опережение"
+      "leading": "Опережение",
+      "burn_down": "Сгорание",
+      "burn_up": "Нарастание"
     },
     "upcoming_cycle": {
       "label": "Предстоящий цикл"
@@ -217,6 +220,7 @@
   },
   "project_module": {
     "add_module": "Добавить модуль",
+    "work_items_count": "В этом модуле рабочих элементов: {count}",
     "update_module": "Обновить модуль",
     "create_module": "Создать модуль",
     "archive_module": "Архивировать модуль",
@@ -367,6 +371,10 @@
     "role": "Роль"
   },
   "project": {
+    "work_items_count": "В этом проекте рабочих элементов: {count}",
+    "archives": {
+      "archived_work_items_count": "В архиве проекта рабочих элементов: {count}"
+    },
     "members_import": {
       "title": "Импорт участников из CSV",
       "description": "Загрузите CSV со столбцами: Email и Role (5=Гость, 15=Участник, 20=Администратор). Пользователи уже должны быть участниками рабочего пространства.",

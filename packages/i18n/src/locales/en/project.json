@@ -8,6 +8,7 @@
   },
   "project_cycles": {
     "add_cycle": "Add cycle",
+    "work_items_count": "There {count, plural, one{is # work item} other{are # work items}} in this cycle",
     "more_details": "More details",
     "cycle": "Cycle",
     "update_cycle": "Update cycle",
@@ -36,7 +37,9 @@
       "current": "Current",
       "labels": "Labels",
       "trailing": "Trailing",
-      "leading": "Leading"
+      "leading": "Leading",
+      "burn_down": "Burn-down",
+      "burn_up": "Burn-up"
     },
     "upcoming_cycle": {
       "label": "Upcoming cycle"
@@ -217,6 +220,7 @@
   },
   "project_module": {
     "add_module": "Add Module",
+    "work_items_count": "There {count, plural, one{is # work item} other{are # work items}} in this module",
     "update_module": "Update Module",
     "create_module": "Create Module",
     "archive_module": "Archive Module",
@@ -367,6 +371,10 @@
     "role": "Role"
   },
   "project": {
+    "work_items_count": "There {count, plural, one{is # work item} other{are # work items}} in this project",
+    "archives": {
+      "archived_work_items_count": "There {count, plural, one{is # work item} other{are # work items}} in project's archived"
+    },
     "members_import": {
       "title": "Import Members from CSV",
       "description": "Upload a CSV with columns: Email and Role (5=Guest, 15=Member, 20=Admin). Users must already be workspace members.",

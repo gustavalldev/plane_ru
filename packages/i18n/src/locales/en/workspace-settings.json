@@ -71,6 +71,8 @@
         "title": "Billing & Plans",
         "current_plan": "Current plan",
         "free_plan": "You are currently using the free plan",
+        "community_plan_description": "Unlimited projects, issues, cycles, modules, pages, and storage",
+        "all_plans": "All plans",
         "view_plans": "View plans"
       },
       "exports": {
@@ -116,6 +118,28 @@
         "options": {
           "all": "Send me everything",
           "individual": "Select individual events"
+        },
+        "events": {
+          "projects": {
+            "label": "Projects",
+            "description": "Project created, updated, or deleted"
+          },
+          "cycles": {
+            "label": "Cycles",
+            "description": "Cycle created, updated, or deleted"
+          },
+          "work_items": {
+            "label": "Work items",
+            "description": "Work item created, updated, deleted, added to a cycle or module"
+          },
+          "modules": {
+            "label": "Modules",
+            "description": "Module created, updated, or deleted"
+          },
+          "work_item_comments": {
+            "label": "Work item comments",
+            "description": "Comment posted, updated, or deleted"
+          }
         },
         "toasts": {
           "created": {

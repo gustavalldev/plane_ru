@@ -53,6 +53,49 @@
       "1_week": "1 week",
       "2_weeks": "2 weeks",
       "custom": "Custom"
+    },
+    "card": {
+      "actions": {
+        "marked_duplicate": "marked that this work item is a duplicate of",
+        "marked_not_duplicate": "marked that this work item is not a duplicate",
+        "added_assignee": "added assignee",
+        "removed_assignee": "removed assignee",
+        "set_start_date": "set start date",
+        "removed_start_date": "removed the start date",
+        "set_due_date": "set due date",
+        "removed_due_date": "removed the due date",
+        "added_label": "added label",
+        "removed_label": "removed label",
+        "added_parent": "added parent",
+        "removed_parent": "removed parent",
+        "marked_related": "marked that this work item is related to",
+        "commented": "commented",
+        "restored_work_item": "restored the work item",
+        "archived_work_item": "archived the work item"
+      },
+      "values": {
+        "assigned_work_item": "the work item and assigned it to you",
+        "work_item": "the work item"
+      },
+      "fallback": {
+        "verbs": {
+          "created": "created",
+          "updated": "updated",
+          "deleted": "deleted"
+        },
+        "fields": {
+          "attachment": "attachment",
+          "cycle": "cycle",
+          "description": "description",
+          "estimate": "estimate",
+          "link": "link",
+          "module": "module",
+          "name": "name",
+          "priority": "priority",
+          "state": "state"
+        }
+      },
+      "connector_to": "to"
     }
   }
 }

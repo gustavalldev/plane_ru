@@ -7,6 +7,7 @@
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
+import { useTranslation } from "@plane/i18n";
 // types
 import type { IProject } from "@plane/types";
 // hooks
@@ -14,22 +15,22 @@ import { useProject } from "@/hooks/store/use-project";
 
 const ARCHIVES_TAB_LIST: {
   key: string;
-  label: string;
+  labelKey: string;
   shouldRender: (projectDetails: IProject) => boolean;
 }[] = [
   {
     key: "issues",
-    label: "Work items",
+    labelKey: "common.work_items",
     shouldRender: () => true,
   },
   {
     key: "cycles",
-    label: "Cycles",
+    labelKey: "common.cycles",
     shouldRender: (projectDetails) => projectDetails.cycle_view,
   },
   {
     key: "modules",
-    label: "Modules",
+    labelKey: "common.modules",
     shouldRender: (projectDetails) => projectDetails.module_view,
   },
 ];
@@ -39,6 +40,7 @@ export const ArchiveTabsList = observer(function ArchiveTabsList() {
   const { workspaceSlug, projectId } = useParams();
   const pathname = usePathname();
   // store hooks
+  const { t } = useTranslation();
   const { getProjectById } = useProject();
 
   // derived values
@@ -59,7 +61,7 @@ export const ArchiveTabsList = observer(function ArchiveTabsList() {
                     : "border-transparent text-tertiary hover:border-subtle hover:text-placeholder"
                 }`}
               >
-                {tab.label}
+                {t(tab.labelKey)}
               </span>
             </Link>
           )
