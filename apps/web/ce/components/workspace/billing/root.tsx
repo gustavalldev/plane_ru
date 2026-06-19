@@ -52,7 +52,7 @@ export const BillingRoot = observer(function BillingRoot() {
         />
         <div className="mt-6">
           <SettingsBoxedControlItem
-            title={t("common.community")}
+            title={t("community")}
             description={t("workspace_settings.settings.billing_and_plans.community_plan_description")}
           />
         </div>
