@@ -1,0 +1,50 @@
+x-leadup-source-dir: &leadup-source-dir ${PLANE_SOURCE_DIR:-/opt/leadup_plane}
+x-leadup-node-build-args: &leadup-node-build-args
+  DOCKER_BUILDKIT: 1
+  VITE_API_BASE_URL: ${VITE_API_BASE_URL:-}
+  VITE_API_BASE_PATH: ${VITE_API_BASE_PATH:-/api}
+  VITE_ADMIN_BASE_URL: ${VITE_ADMIN_BASE_URL:-}
+  VITE_ADMIN_BASE_PATH: ${VITE_ADMIN_BASE_PATH:-/god-mode}
+  VITE_LIVE_BASE_URL: ${VITE_LIVE_BASE_URL:-}
+  VITE_LIVE_BASE_PATH: ${VITE_LIVE_BASE_PATH:-/live}
+  VITE_SPACE_BASE_URL: ${VITE_SPACE_BASE_URL:-}
+  VITE_SPACE_BASE_PATH: ${VITE_SPACE_BASE_PATH:-/spaces}
+  VITE_WEB_BASE_URL: ${VITE_WEB_BASE_URL:-}
+  VITE_WEB_BASE_PATH: ${VITE_WEB_BASE_PATH:-}
+
+x-leadup-backend-build: &leadup-backend-build
+  context: ${PLANE_SOURCE_DIR:-/opt/leadup_plane}/apps/api
+  dockerfile: Dockerfile.api
+  args:
+    DOCKER_BUILDKIT: 1
+
+services:
+  web:
+    image: leadup/plane-frontend:${LEADUP_PLANE_IMAGE_TAG:-preview}
+    build:
+      context: *leadup-source-dir
+      dockerfile: apps/web/Dockerfile.web
+      args: *leadup-node-build-args
+
+  space:
+    image: leadup/plane-space:${LEADUP_PLANE_IMAGE_TAG:-preview}
+    build:
+      context: *leadup-source-dir
+      dockerfile: apps/space/Dockerfile.space
+      args: *leadup-node-build-args
+
+  api:
+    image: leadup/plane-backend:${LEADUP_PLANE_IMAGE_TAG:-preview}
+    build: *leadup-backend-build
+
+  worker:
+    image: leadup/plane-backend:${LEADUP_PLANE_IMAGE_TAG:-preview}
+    build: *leadup-backend-build
+
+  beat-worker:
+    image: leadup/plane-backend:${LEADUP_PLANE_IMAGE_TAG:-preview}
+    build: *leadup-backend-build
+
+  migrator:
+    image: leadup/plane-backend:${LEADUP_PLANE_IMAGE_TAG:-preview}
+    build: *leadup-backend-build

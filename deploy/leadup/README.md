@@ -21,6 +21,23 @@ todo.lead-up.ru.  A  88.218.70.102
 - `bin/bootstrap-runtime.sh` downloads the pinned Plane release compose assets and renders `variables.env`.
 - `nginx/todo.lead-up.ru.conf` proxies public HTTPS traffic to the local Plane proxy port.
 - `runtime/` is generated on the server and intentionally ignored by Git.
+- `docker-compose.source.yml` overrides the release app images with images built from this fork while keeping the generated runtime services, ports, and volumes intact.
+
+## Deploy Custom Source
+
+From `/opt/leadup_plane/deploy/leadup/runtime`:
+
+```bash
+docker compose --env-file variables.env -p leadup-plane \
+  -f docker-compose.yml \
+  -f ../docker-compose.source.yml \
+  build web space api worker beat-worker migrator
+
+docker compose --env-file variables.env -p leadup-plane \
+  -f docker-compose.yml \
+  -f ../docker-compose.source.yml \
+  up -d migrator api worker beat-worker web space
+```
 
 ## Notes
 
