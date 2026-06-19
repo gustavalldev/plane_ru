@@ -11,7 +11,7 @@ import { EAuthModes, EAuthSteps } from "@plane/constants";
 import type { IEmailCheckData } from "@plane/types";
 // helpers
 import type { TAuthErrorInfo } from "@/helpers/authentication.helper";
-import { authErrorHandler } from "@/helpers/authentication.helper";
+import { EAuthenticationErrorCodes, authErrorHandler } from "@/helpers/authentication.helper";
 // hooks
 import { useInstance } from "@/hooks/store/use-instance";
 import { useAppRouter } from "@/hooks/use-app-router";
@@ -65,15 +65,13 @@ export const AuthFormRoot = observer(function AuthFormRoot(props: TAuthFormRoot)
             setAuthStep(EAuthSteps.PASSWORD);
           }
         } else {
-          if (currentAuthMode === EAuthModes.SIGN_IN) setAuthMode(EAuthModes.SIGN_UP);
-          if (response.status === "MAGIC_CODE") {
-            setAuthStep(EAuthSteps.UNIQUE_CODE);
-            generateEmailUniqueCode(data.email);
-          } else if (response.status === "CREDENTIAL") {
-            setAuthStep(EAuthSteps.PASSWORD);
-          }
+          setAuthMode(EAuthModes.SIGN_IN);
+          setAuthStep(EAuthSteps.EMAIL);
+          const errorhandler = authErrorHandler(EAuthenticationErrorCodes.USER_DOES_NOT_EXIST, data.email);
+          if (errorhandler?.type) setErrorInfo(errorhandler);
         }
         setIsExistingEmail(response.existing);
+        return undefined;
       })
       .catch((error) => {
         const errorhandler = authErrorHandler(error?.error_code?.toString(), data?.email || undefined);
@@ -82,17 +80,17 @@ export const AuthFormRoot = observer(function AuthFormRoot(props: TAuthFormRoot)
   };
 
   const handleEmailClear = () => {
-    setAuthMode(currentAuthMode);
+    setAuthMode(EAuthModes.SIGN_IN);
     setErrorInfo(undefined);
     setEmail("");
     setAuthStep(EAuthSteps.EMAIL);
-    router.push(currentAuthMode === EAuthModes.SIGN_IN ? `/` : "/sign-up");
+    router.push("/");
   };
 
   // generating the unique code
-  const generateEmailUniqueCode = async (email: string): Promise<{ code: string } | undefined> => {
+  const generateEmailUniqueCode = async (emailAddress: string): Promise<{ code: string } | undefined> => {
     if (!isSMTPConfigured) return;
-    const payload = { email: email };
+    const payload = { email: emailAddress };
     return await authService
       .generateUniqueCode(payload)
       .then(() => ({ code: "" }))

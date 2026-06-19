@@ -36,7 +36,7 @@ export const getPasswordStrength = (password: string): E_PASSWORD_STRENGTH => {
   const hasUpperCase = /[A-Z]/.test(password);
   const hasLowerCase = /[a-z]/.test(password);
   const hasDigit = /[0-9]/.test(password);
-  const hasSpecialChar = /[!@#$%^&*()\-_+=\[\]{}|;:'",.<>?/]/.test(password);
+  const hasSpecialChar = /[!@#$%^&*()\-_+=[\]{}|;:'",.<>?/]/.test(password);
 
   if (hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar) {
     return E_PASSWORD_STRENGTH.STRENGTH_VALID;
@@ -78,7 +78,7 @@ export const getPasswordCriteria = (password: string): PasswordCriteria[] => [
   {
     key: "special",
     label: "Min 1 special character",
-    isValid: /[!@#$%^&*()\-_+=\[\]{}|;:'",.<>?/]/.test(password),
+    isValid: /[!@#$%^&*()\-_+=[\]{}|;:'",.<>?/]/.test(password),
   },
 ];
 
@@ -147,8 +147,8 @@ const errorCodeMessages: {
     message: () => `User account deactivated. Please contact administrator.`,
   },
   [EAuthErrorCodes.USER_DOES_NOT_EXIST]: {
-    title: `User does not exist`,
-    message: () => `No account found. Create one to get started.`,
+    title: `Пользователь не найден`,
+    message: () => `Пользователь с такой почтой не найден. Обратитесь к администратору.`,
   },
   [EAuthErrorCodes.REQUIRED_EMAIL_PASSWORD_SIGN_IN]: {
     title: `Email and password required`,

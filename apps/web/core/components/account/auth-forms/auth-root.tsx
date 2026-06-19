@@ -64,8 +64,8 @@ export const AuthRoot = observer(function AuthRoot(props: TAuthRoot) {
       if (errorhandler) {
         // password error handler
         if ([EAuthenticationErrorCodes.AUTHENTICATION_FAILED_SIGN_UP].includes(errorhandler.code)) {
-          setAuthMode(EAuthModes.SIGN_UP);
-          setAuthStep(EAuthSteps.PASSWORD);
+          setAuthMode(EAuthModes.SIGN_IN);
+          setAuthStep(EAuthSteps.EMAIL);
         }
         if ([EAuthenticationErrorCodes.AUTHENTICATION_FAILED_SIGN_IN].includes(errorhandler.code)) {
           setAuthMode(EAuthModes.SIGN_IN);
@@ -80,8 +80,8 @@ export const AuthRoot = observer(function AuthRoot(props: TAuthRoot) {
             EAuthenticationErrorCodes.EMAIL_CODE_ATTEMPT_EXHAUSTED_SIGN_UP,
           ].includes(errorhandler.code)
         ) {
-          setAuthMode(EAuthModes.SIGN_UP);
-          setAuthStep(EAuthSteps.UNIQUE_CODE);
+          setAuthMode(EAuthModes.SIGN_IN);
+          setAuthStep(EAuthSteps.EMAIL);
         }
         if (
           [
@@ -137,10 +137,10 @@ export const AuthRoot = observer(function AuthRoot(props: TAuthRoot) {
           authStep={authStep}
           authMode={authMode}
           email={email}
-          setEmail={(email) => setEmail(email)}
-          setAuthMode={(authMode) => setAuthMode(authMode)}
-          setAuthStep={(authStep) => setAuthStep(authStep)}
-          setErrorInfo={(errorInfo) => setErrorInfo(errorInfo)}
+          setEmail={(nextEmail) => setEmail(nextEmail)}
+          setAuthMode={(nextAuthMode) => setAuthMode(nextAuthMode)}
+          setAuthStep={(nextAuthStep) => setAuthStep(nextAuthStep)}
+          setErrorInfo={(nextErrorInfo) => setErrorInfo(nextErrorInfo)}
           currentAuthMode={currentAuthMode}
         />
       )}

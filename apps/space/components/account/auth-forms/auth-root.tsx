@@ -36,7 +36,7 @@ export const AuthRoot = observer(function AuthRoot() {
   const error_code = searchParams.get("error_code") || undefined;
   const nextPath = searchParams.get("next_path") || undefined;
   // states
-  const [authMode, setAuthMode] = useState<EAuthModes>(EAuthModes.SIGN_UP);
+  const [authMode, setAuthMode] = useState<EAuthModes>(EAuthModes.SIGN_IN);
   const [authStep, setAuthStep] = useState<EAuthSteps>(EAuthSteps.EMAIL);
   const [email, setEmail] = useState(emailParam ? emailParam.toString() : "");
   const [errorInfo, setErrorInfo] = useState<TAuthErrorInfo | undefined>(undefined);
@@ -53,8 +53,8 @@ export const AuthRoot = observer(function AuthRoot() {
           setAuthStep(EAuthSteps.PASSWORD);
         }
         if (errorhandler.code === EAuthenticationErrorCodes.AUTHENTICATION_FAILED_SIGN_UP) {
-          setAuthMode(EAuthModes.SIGN_UP);
-          setAuthStep(EAuthSteps.PASSWORD);
+          setAuthMode(EAuthModes.SIGN_IN);
+          setAuthStep(EAuthSteps.EMAIL);
         }
         if (
           [
@@ -73,8 +73,8 @@ export const AuthRoot = observer(function AuthRoot() {
             EAuthenticationErrorCodes.EMAIL_CODE_ATTEMPT_EXHAUSTED_SIGN_UP,
           ].includes(errorhandler.code)
         ) {
-          setAuthMode(EAuthModes.SIGN_UP);
-          setAuthStep(EAuthSteps.UNIQUE_CODE);
+          setAuthMode(EAuthModes.SIGN_IN);
+          setAuthStep(EAuthSteps.EMAIL);
         }
         setErrorInfo(errorhandler);
       }
@@ -94,36 +94,24 @@ export const AuthRoot = observer(function AuthRoot() {
     await authService
       .emailCheck(data)
       .then(async (response) => {
-        let currentAuthMode: EAuthModes = response.existing ? EAuthModes.SIGN_IN : EAuthModes.SIGN_UP;
-        if (response.existing) {
-          currentAuthMode = EAuthModes.SIGN_IN;
-          setAuthMode(() => EAuthModes.SIGN_IN);
-        } else {
-          currentAuthMode = EAuthModes.SIGN_UP;
-          setAuthMode(() => EAuthModes.SIGN_UP);
+        if (!response.existing) {
+          setAuthMode(EAuthModes.SIGN_IN);
+          setAuthStep(EAuthSteps.EMAIL);
+          const errorhandler = authErrorHandler(EAuthenticationErrorCodes.USER_DOES_NOT_EXIST, data.email);
+          if (errorhandler?.type) setErrorInfo(errorhandler);
+          return;
         }
 
-        if (currentAuthMode === EAuthModes.SIGN_IN) {
-          if (isSMTPConfigured && isMagicLoginEnabled && response.status === "MAGIC_CODE") {
-            setAuthStep(EAuthSteps.UNIQUE_CODE);
-            generateEmailUniqueCode(data.email);
-          } else if (isEmailPasswordEnabled) {
-            setIsPasswordAutoset(false);
-            setAuthStep(EAuthSteps.PASSWORD);
-          } else {
-            const errorhandler = authErrorHandler("5005" as EAuthenticationErrorCodes);
-            setErrorInfo(errorhandler);
-          }
+        setAuthMode(EAuthModes.SIGN_IN);
+        if (isSMTPConfigured && isMagicLoginEnabled && response.status === "MAGIC_CODE") {
+          setAuthStep(EAuthSteps.UNIQUE_CODE);
+          generateEmailUniqueCode(data.email);
+        } else if (isEmailPasswordEnabled) {
+          setIsPasswordAutoset(false);
+          setAuthStep(EAuthSteps.PASSWORD);
         } else {
-          if (isSMTPConfigured && isMagicLoginEnabled && response.status === "MAGIC_CODE") {
-            setAuthStep(EAuthSteps.UNIQUE_CODE);
-            generateEmailUniqueCode(data.email);
-          } else if (isEmailPasswordEnabled) {
-            setAuthStep(EAuthSteps.PASSWORD);
-          } else {
-            const errorhandler = authErrorHandler("5006" as EAuthenticationErrorCodes);
-            setErrorInfo(errorhandler);
-          }
+          const errorhandler = authErrorHandler("5005" as EAuthenticationErrorCodes);
+          setErrorInfo(errorhandler);
         }
         return;
       })
@@ -134,8 +122,8 @@ export const AuthRoot = observer(function AuthRoot() {
   };
 
   // generating the unique code
-  const generateEmailUniqueCode = async (email: string): Promise<{ code: string } | undefined> => {
-    const payload = { email: email };
+  const generateEmailUniqueCode = async (emailAddress: string): Promise<{ code: string } | undefined> => {
+    const payload = { email: emailAddress };
     return await authService
       .generateUniqueCode(payload)
       .then(() => ({ code: "" }))
@@ -163,6 +151,7 @@ export const AuthRoot = observer(function AuthRoot() {
             nextPath={nextPath}
             handleEmailClear={() => {
               setEmail("");
+              setAuthMode(EAuthModes.SIGN_IN);
               setAuthStep(EAuthSteps.EMAIL);
             }}
             generateEmailUniqueCode={generateEmailUniqueCode}
@@ -177,6 +166,7 @@ export const AuthRoot = observer(function AuthRoot() {
             nextPath={nextPath}
             handleEmailClear={() => {
               setEmail("");
+              setAuthMode(EAuthModes.SIGN_IN);
               setAuthStep(EAuthSteps.EMAIL);
             }}
             handleAuthStep={(step: EAuthSteps) => {
@@ -185,7 +175,7 @@ export const AuthRoot = observer(function AuthRoot() {
             }}
           />
         )}
-        <TermsAndConditions isSignUp={authMode === EAuthModes.SIGN_UP ? true : false} />
+        <TermsAndConditions isSignUp={authMode === EAuthModes.SIGN_UP} />
       </div>
     </div>
   );

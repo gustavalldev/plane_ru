@@ -192,19 +192,8 @@ const errorCodeMessages: {
   },
 
   [EAuthenticationErrorCodes.USER_DOES_NOT_EXIST]: {
-    title: `User does not exist`,
-    message: (email = undefined) => (
-      <div>
-        No account found.&nbsp;
-        <Link
-          className="font-medium underline underline-offset-4 transition-all hover:font-bold"
-          href={`/${email ? `?email=${encodeURIComponent(email)}` : ``}`}
-        >
-          Create one
-        </Link>
-        &nbsp;to get started.
-      </div>
-    ),
+    title: `Пользователь не найден`,
+    message: () => `Пользователь с такой почтой не найден. Обратитесь к администратору.`,
   },
   [EAuthenticationErrorCodes.REQUIRED_EMAIL_PASSWORD_SIGN_IN]: {
     title: `Email and password required`,

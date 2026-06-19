@@ -5,9 +5,11 @@
  */
 
 import { redirect } from "react-router";
+import type { Route } from "./+types/accounts-signup";
 
-export const clientLoader = () => {
-  throw redirect("/sign-up/");
+export const clientLoader = ({ request }: Route.ClientLoaderArgs) => {
+  const search = new URL(request.url).search;
+  throw redirect(`/${search}`);
 };
 
 export default function AccountsSignup() {
