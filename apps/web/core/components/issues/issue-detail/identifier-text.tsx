@@ -35,7 +35,7 @@ export function IdentifierText(props: TIdentifierTextProps) {
         .then(() => {
           setToast({
             type: TOAST_TYPE.SUCCESS,
-            title: "Work item ID copied to clipboard",
+            title: "ID рабочего элемента скопирован в буфер обмена",
           });
           return;
         })

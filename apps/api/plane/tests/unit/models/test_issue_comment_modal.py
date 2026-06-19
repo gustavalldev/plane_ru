@@ -32,7 +32,7 @@ def project(workspace, create_user):
 def state(project):
     """Create a test state"""
     return State.objects.create(
-        name="Todo",
+        name="К выполнению",
         project=project,
         group="backlog",
         default=True,

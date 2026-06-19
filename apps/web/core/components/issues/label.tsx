@@ -43,7 +43,7 @@ export function ViewIssueLabel({ labelDetails, maxRender = 1 }: Props) {
           <div className="shadow-sm flex flex-shrink-0 cursor-default items-center rounded-md border border-strong px-2.5 py-1 text-11">
             <Tooltip
               position="top"
-              tooltipHeading="Labels"
+              tooltipHeading="Метки"
               tooltipContent={labelDetails.map((l) => l.name).join(", ")}
               isMobile={isMobile}
             >

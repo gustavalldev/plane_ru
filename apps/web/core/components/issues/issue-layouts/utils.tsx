@@ -97,7 +97,7 @@ export const getGroupByColumns = ({
     return [
       {
         id: "All Issues",
-        name: `All ${isEpic ? "Epics" : "work items"}`,
+        name: isEpic ? "Все эпики" : "Все рабочие элементы",
         payload: {},
         icon: undefined,
       },
@@ -169,12 +169,12 @@ const getCycleColumns = (): IGroupByColumn[] | undefined => {
       icon: <CycleGroupIcon cycleGroup={cycleStatus} className="h-3.5 w-3.5" />,
       payload: { cycle_id: cycle.id },
       isDropDisabled,
-      dropErrorMessage: isDropDisabled ? "Work item cannot be moved to completed cycles" : undefined,
+      dropErrorMessage: isDropDisabled ? "Рабочий элемент нельзя перенести в завершенный цикл" : undefined,
     });
   });
   cycles.push({
     id: "None",
-    name: "None",
+    name: "Нет",
     icon: <CycleIcon className="h-3.5 w-3.5" />,
     payload: {},
   });
@@ -201,7 +201,7 @@ const getModuleColumns = (): IGroupByColumn[] | undefined => {
   });
   modules.push({
     id: "None",
-    name: "None",
+    name: "Нет",
     icon: <ModuleIcon className="h-3.5 w-3.5" />,
     payload: {},
   });
@@ -256,7 +256,7 @@ const getLabelsColumns = ({ isWorkspaceLevel }: TGetColumns): IGroupByColumn[] =
   // map labels to group by columns
   const labels = [
     ...(isWorkspaceLevel ? workspaceLabels || [] : projectLabels || []),
-    { id: "None", name: "None", color: "#666" },
+    { id: "None", name: "Нет", color: "#666" },
   ];
   // map labels to group by columns
   return labels.map((label) => ({

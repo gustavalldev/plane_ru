@@ -9,10 +9,11 @@ import { observer } from "mobx-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 // plane imports
+import { useTranslation } from "@plane/i18n";
 import { PriorityIcon } from "@plane/propel/icons";
 import { Tooltip } from "@plane/propel/tooltip";
 import { Row, Avatar } from "@plane/ui";
-import { cn, renderFormattedDate, getFileURL } from "@plane/utils";
+import { cn, renderFormattedDate, getFileURL, getIssuePriorityFilters } from "@plane/utils";
 // components
 import { ButtonAvatars } from "@/components/dropdowns/member/avatar";
 // hooks
@@ -35,6 +36,7 @@ type InboxIssueListItemProps = {
 
 export const InboxIssueListItem = observer(function InboxIssueListItem(props: InboxIssueListItemProps) {
   const { workspaceSlug, projectId, inboxIssueId, projectIdentifier, setIsMobileSidebar } = props;
+  const { t } = useTranslation();
   // router
   const searchParams = useSearchParams();
   const selectedInboxIssueId = searchParams.get("inboxIssueId");
@@ -45,6 +47,7 @@ export const InboxIssueListItem = observer(function InboxIssueListItem(props: In
   const { getUserDetails } = useMember();
   const inboxIssue = getIssueInboxByIssueId(inboxIssueId);
   const issue = inboxIssue?.issue;
+  const priorityDetails = issue?.priority ? getIssuePriorityFilters(issue.priority) : undefined;
 
   const handleIssueRedirection = (event: MouseEvent, currentIssueId: string | undefined) => {
     if (selectedInboxIssueId === currentIssueId) event.preventDefault();
@@ -95,7 +98,10 @@ export const InboxIssueListItem = observer(function InboxIssueListItem(props: In
               <div className="rounded-full border-2 border-strong-1" />
 
               {issue.priority && (
-                <Tooltip tooltipHeading="Priority" tooltipContent={`${issue.priority ?? "None"}`}>
+                <Tooltip
+                  tooltipHeading={t("common.priority")}
+                  tooltipContent={priorityDetails ? t(priorityDetails.titleTranslationKey) : t("common.none")}
+                >
                   <PriorityIcon priority={issue.priority} withContainer className="h-3 w-3" />
                 </Tooltip>
               )}

@@ -34,7 +34,7 @@ export function IssueLink(props: TIssueLink) {
   });
   return (
     <Tooltip
-      tooltipContent={activity.issue_detail ? activity.issue_detail.name : "This work item has been deleted"}
+      tooltipContent={activity.issue_detail ? activity.issue_detail.name : "Этот рабочий элемент удален"}
       isMobile={isMobile}
     >
       <a
@@ -46,7 +46,7 @@ export function IssueLink(props: TIssueLink) {
       >
         {activity.issue_detail
           ? `${activity.project_detail.identifier}-${activity.issue_detail.sequence_id}`
-          : "Work items"}{" "}
+          : "Рабочие элементы"}{" "}
         <span className="font-regular">{activity.issue_detail?.name}</span>
       </a>
     </Tooltip>

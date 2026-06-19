@@ -458,7 +458,7 @@ STATE_EXAMPLE = OpenApiExample(
     name="State",
     value={
         "id": "550e8400-e29b-41d4-a716-446655440000",
-        "name": "In Progress",
+        "name": "В работе",
         "color": "#f39c12",
         "group": "started",
         "sequence": 2,
@@ -758,7 +758,7 @@ SAMPLE_ISSUE = {
     "sequence_id": 123,
     "state": {
         "id": "550e8400-e29b-41d4-a716-446655440001",
-        "name": "In Progress",
+        "name": "В работе",
         "group": "started",
     },
     "assignees": [],
@@ -801,7 +801,7 @@ SAMPLE_PROJECT = {
 
 SAMPLE_STATE = {
     "id": "550e8400-e29b-41d4-a716-446655440000",
-    "name": "In Progress",
+    "name": "В работе",
     "color": "#ffa500",
     "group": "started",
     "sequence": 2,

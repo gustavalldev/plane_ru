@@ -174,7 +174,7 @@ class IntakeIssueListCreateAPIEndpoint(BaseAPIView):
 
         if not triage_state:
             triage_state = State.objects.create(
-                name="Triage",
+                name="Разбор",
                 group=StateGroup.TRIAGE.value,
                 project_id=project_id,
                 workspace_id=project.workspace_id,

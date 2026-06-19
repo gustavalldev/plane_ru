@@ -124,62 +124,62 @@ export const ANALYTICS_DURATION_FILTER_OPTIONS = [
 export const ANALYTICS_X_AXIS_VALUES: { value: ChartXAxisProperty; label: string }[] = [
   {
     value: ChartXAxisProperty.STATES,
-    label: "State name",
+    label: "Название статуса",
   },
   {
     value: ChartXAxisProperty.STATE_GROUPS,
-    label: "State group",
+    label: "Группа статуса",
   },
   {
     value: ChartXAxisProperty.PRIORITY,
-    label: "Priority",
+    label: "Приоритет",
   },
   {
     value: ChartXAxisProperty.LABELS,
-    label: "Label",
+    label: "Метка",
   },
   {
     value: ChartXAxisProperty.ASSIGNEES,
-    label: "Assignee",
+    label: "Исполнитель",
   },
   {
     value: ChartXAxisProperty.ESTIMATE_POINTS,
-    label: "Estimate point",
+    label: "Оценка",
   },
   {
     value: ChartXAxisProperty.CYCLES,
-    label: "Cycle",
+    label: "Цикл",
   },
   {
     value: ChartXAxisProperty.MODULES,
-    label: "Module",
+    label: "Модуль",
   },
   {
     value: ChartXAxisProperty.COMPLETED_AT,
-    label: "Completed date",
+    label: "Дата завершения",
   },
   {
     value: ChartXAxisProperty.TARGET_DATE,
-    label: "Due date",
+    label: "Срок выполнения",
   },
   {
     value: ChartXAxisProperty.START_DATE,
-    label: "Start date",
+    label: "Дата начала",
   },
   {
     value: ChartXAxisProperty.CREATED_AT,
-    label: "Created date",
+    label: "Дата создания",
   },
 ];
 
 export const ANALYTICS_Y_AXIS_VALUES: { value: ChartYAxisMetric; label: string }[] = [
   {
     value: ChartYAxisMetric.WORK_ITEM_COUNT,
-    label: "Work item",
+    label: "Рабочий элемент",
   },
   {
     value: ChartYAxisMetric.ESTIMATE_POINT_COUNT,
-    label: "Estimate",
+    label: "Оценка",
   },
   {
     value: ChartYAxisMetric.EPIC_WORK_ITEM_COUNT,

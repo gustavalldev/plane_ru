@@ -82,22 +82,22 @@ def create_project_members(workspace, project, members):
 def create_states(workspace, project, user_id):
     states = [
         {
-            "name": "Backlog",
+            "name": "Бэклог",
             "color": "#A3A3A3",
             "sequence": 15000,
             "group": "backlog",
             "default": True,
         },
-        {"name": "Todo", "color": "#3A3A3A", "sequence": 25000, "group": "unstarted"},
+        {"name": "К выполнению", "color": "#3A3A3A", "sequence": 25000, "group": "unstarted"},
         {
-            "name": "In Progress",
+            "name": "В работе",
             "color": "#F59E0B",
             "sequence": 35000,
             "group": "started",
         },
-        {"name": "Done", "color": "#16A34A", "sequence": 45000, "group": "completed"},
+        {"name": "Готово", "color": "#16A34A", "sequence": 45000, "group": "completed"},
         {
-            "name": "Cancelled",
+            "name": "Отменено",
             "color": "#EF4444",
             "sequence": 55000,
             "group": "cancelled",

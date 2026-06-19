@@ -112,7 +112,7 @@ export const CalendarDayTile = observer(function CalendarDayTile(props: Props) {
             if (diffInDays < 0) {
               setToast({
                 type: TOAST_TYPE.ERROR,
-                title: "Error!",
+                title: "Ошибка",
                 message: "Due date cannot be before the start date of the work item.",
               });
               return;

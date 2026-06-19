@@ -27,7 +27,7 @@ export const IssueBlockModules = observer(function IssueBlockModules({ moduleIds
 
   return (
     <div className="relative flex h-full flex-wrap items-center gap-1">
-      <Tooltip tooltipHeading="Modules" tooltipContent={modulesString}>
+      <Tooltip tooltipHeading="Модули" tooltipContent={modulesString}>
         {modules.length <= 1 ? (
           <div
             key={modules?.[0]?.id}

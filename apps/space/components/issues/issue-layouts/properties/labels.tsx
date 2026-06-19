@@ -25,7 +25,7 @@ export const IssueBlockLabels = observer(function IssueBlockLabels({ labelIds, s
 
   if (labels.length <= 0)
     return (
-      <Tooltip position="top" tooltipHeading="Labels" tooltipContent="None">
+      <Tooltip position="top" tooltipHeading="Метки" tooltipContent="Нет">
         <div
           className={`flex h-full items-center justify-center gap-2 rounded-sm border-[0.5px] border-strong px-2.5 py-1 text-11`}
         >
@@ -40,7 +40,7 @@ export const IssueBlockLabels = observer(function IssueBlockLabels({ labelIds, s
       {labels.length <= 2 ? (
         <>
           {labels.map((label) => (
-            <Tooltip key={label.id} position="top" tooltipHeading="Labels" tooltipContent={label?.name ?? ""}>
+            <Tooltip key={label.id} position="top" tooltipHeading="Метки" tooltipContent={label?.name ?? ""}>
               <div
                 key={label?.id}
                 className={`flex h-full max-w-full flex-shrink-0 items-center overflow-hidden rounded-sm border-[0.5px] border-strong px-2.5 py-1 text-11`}
@@ -62,10 +62,10 @@ export const IssueBlockLabels = observer(function IssueBlockLabels({ labelIds, s
         <div
           className={`cursor-not-allowed" flex h-full flex-shrink-0 items-center rounded-sm border-[0.5px] border-strong px-2.5 py-1 text-11`}
         >
-          <Tooltip position="top" tooltipHeading="Labels" tooltipContent={labelsString}>
+          <Tooltip position="top" tooltipHeading="Метки" tooltipContent={labelsString}>
             <div className="flex h-full items-center gap-1.5 text-secondary">
               <span className="h-2 w-2 flex-shrink-0 rounded-full bg-accent-primary" />
-              {`${labels.length} Labels`}
+              {`${labels.length} метки`}
             </div>
           </Tooltip>
         </div>

@@ -2,9 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 
-# Django imports
-from django.db.models import Q
-
 # Third Party imports
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -24,9 +21,9 @@ class ProjectStatesEndpoint(BaseAPIView):
             return Response({"error": "Invalid anchor"}, status=status.HTTP_404_NOT_FOUND)
 
         states = State.objects.filter(
-            ~Q(name="Triage"),
             workspace__slug=deploy_board.workspace.slug,
             project_id=deploy_board.project_id,
+            is_triage=False,
         ).values("name", "group", "color", "id", "sequence")
 
         return Response(states, status=status.HTTP_200_OK)

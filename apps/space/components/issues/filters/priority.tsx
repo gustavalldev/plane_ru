@@ -30,12 +30,17 @@ export const FilterPriority = observer(function FilterPriority(props: Props) {
 
   const appliedFiltersCount = appliedFilters?.length ?? 0;
 
-  const filteredOptions = ISSUE_PRIORITY_FILTERS.filter((p) => p.key.includes(searchQuery.toLowerCase()));
+  const filteredOptions = ISSUE_PRIORITY_FILTERS.filter((p) => {
+    const normalizedSearchQuery = searchQuery.toLowerCase();
+    return (
+      p.key.includes(normalizedSearchQuery) || t(p.titleTranslationKey).toLowerCase().includes(normalizedSearchQuery)
+    );
+  });
 
   return (
     <>
       <FilterHeader
-        title={`Priority${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
+        title={`${t("common.priority")}${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
         isPreviewEnabled={previewEnabled}
         handleIsPreviewEnabled={() => setPreviewEnabled(!previewEnabled)}
       />

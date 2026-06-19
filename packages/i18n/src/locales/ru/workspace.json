@@ -174,9 +174,9 @@
     },
     "state": {
       "backlog": "Бэклог",
-      "unstarted": "Не начато",
-      "started": "В процессе",
-      "completed": "Завершено",
+      "unstarted": "К выполнению",
+      "started": "В работе",
+      "completed": "Готово",
       "cancelled": "Отменено"
     },
     "sort": {

@@ -73,12 +73,12 @@ class Module(ProjectBaseModel):
     target_date = models.DateField(null=True)
     status = models.CharField(
         choices=(
-            ("backlog", "Backlog"),
-            ("planned", "Planned"),
-            ("in-progress", "In Progress"),
-            ("paused", "Paused"),
-            ("completed", "Completed"),
-            ("cancelled", "Cancelled"),
+            ("backlog", "Бэклог"),
+            ("planned", "Запланировано"),
+            ("in-progress", "В работе"),
+            ("paused", "Приостановлено"),
+            ("completed", "Готово"),
+            ("cancelled", "Отменено"),
         ),
         default="planned",
         max_length=20,

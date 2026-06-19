@@ -80,14 +80,14 @@ export const HeaderGroupByCard = observer(function HeaderGroupByCard(props: IHea
 
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Success!",
-        message: "Work items added to the cycle successfully.",
+        title: "Успешно",
+        message: "Рабочие элементы добавлены в цикл.",
       });
     } catch (_error) {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: "Selected work items could not be added to the cycle. Please try again.",
+        title: "Ошибка",
+        message: "Не удалось добавить выбранные рабочие элементы в цикл. Попробуйте еще раз.",
       });
     }
   };

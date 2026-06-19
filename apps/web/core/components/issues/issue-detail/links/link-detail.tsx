@@ -53,7 +53,7 @@ export function IssueLinkDetail(props: TIssueLinkDetail) {
             copyTextToClipboard(linkDetail.url);
             setToast({
               type: TOAST_TYPE.SUCCESS,
-              title: "Link copied!",
+              title: "Ссылка скопирована",
               message: "Link copied to clipboard",
             });
           }}

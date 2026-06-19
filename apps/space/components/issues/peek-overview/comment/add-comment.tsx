@@ -66,8 +66,8 @@ export const AddComment = observer(function AddComment(props: Props) {
       .catch(() =>
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "Comment could not be posted. Please try again.",
+          title: "Ошибка",
+          message: "Не удалось отправить комментарий. Попробуйте еще раз.",
         })
       );
   };

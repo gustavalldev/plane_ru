@@ -30,7 +30,12 @@ export const FilterPriority = observer(function FilterPriority(props: Props) {
   // derived values
   const filterValue = inboxFilters?.priority || [];
   const appliedFiltersCount = filterValue?.length ?? 0;
-  const filteredOptions = ISSUE_PRIORITIES.filter((p) => p.key.includes(searchQuery.toLowerCase()));
+  const filteredOptions = ISSUE_PRIORITIES.filter((p) => {
+    const normalizedSearchQuery = searchQuery.toLowerCase();
+    return (
+      p.key.includes(normalizedSearchQuery) || t(p.titleTranslationKey).toLowerCase().includes(normalizedSearchQuery)
+    );
+  });
 
   const handleFilterValue = (value: TIssuePriorities): TIssuePriorities[] =>
     filterValue?.includes(value) ? filterValue.filter((v) => v !== value) : [...filterValue, value];
@@ -51,7 +56,7 @@ export const FilterPriority = observer(function FilterPriority(props: Props) {
                 isChecked={filterValue?.includes(priority.key) ? true : false}
                 onClick={() => handleInboxIssueFilters("priority", handleFilterValue(priority.key))}
                 icon={<PriorityIcon priority={priority.key} className="h-3.5 w-3.5" />}
-                title={priority.title}
+                title={t(priority.titleTranslationKey)}
               />
             ))
           ) : (

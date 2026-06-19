@@ -144,7 +144,7 @@ const getLabelsColumns = (label: IIssueLabelStore) => {
 
   if (!storeLabels) return;
 
-  const labels = [...storeLabels, { id: "None", name: "None", color: "#666" }];
+  const labels = [...storeLabels, { id: "None", name: "Нет", color: "#666" }];
 
   return labels.map((label) => ({
     id: label.id,
@@ -168,7 +168,7 @@ const getAssigneeColumns = (member: IIssueMemberStore) => {
     payload: { assignee_ids: [member.id] },
   }));
 
-  assigneeColumns.push({ id: "None", name: "None", icon: <Avatar size="md" />, payload: {} });
+  assigneeColumns.push({ id: "None", name: "Нет", icon: <Avatar size="md" />, payload: {} });
 
   return assigneeColumns;
 };

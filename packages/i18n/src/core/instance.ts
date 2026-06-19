@@ -49,4 +49,9 @@ export const initPromise = i18nInstance
   // Eagerly pre-load all namespaces for the initial language so they're cached
   // before any component renders. This prevents the re-render cascade that occurs
   // when react-i18next triggers concurrent async loads for unloaded namespaces.
-  .then(() => i18nInstance.loadNamespaces(NAMESPACES));
+  .then(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = i18nInstance.language;
+    }
+    return i18nInstance.loadNamespaces(NAMESPACES);
+  });
