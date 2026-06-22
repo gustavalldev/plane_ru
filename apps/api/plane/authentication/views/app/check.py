@@ -16,7 +16,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 ## Module imports
-from plane.db.models import User
+from plane.db.models import User, WorkspaceMemberInvite
 from plane.license.models import Instance
 from plane.authentication.adapter.error import (
     AuthenticationException,
@@ -78,6 +78,7 @@ class EmailCheckEndpoint(APIView):
             return Response(exc.get_error_dict(), status=status.HTTP_400_BAD_REQUEST)
         # Check if a user already exists with the given email
         existing_user = User.objects.filter(email=email).first()
+        has_invitation = WorkspaceMemberInvite.objects.filter(email=email).exists()
 
         # If existing user
         if existing_user:
@@ -85,6 +86,7 @@ class EmailCheckEndpoint(APIView):
             return Response(
                 {
                     "existing": True,
+                    "has_invitation": has_invitation,
                     "status": (
                         "MAGIC_CODE"
                         if existing_user.is_password_autoset and smtp_configured and is_magic_login_enabled
@@ -97,6 +99,7 @@ class EmailCheckEndpoint(APIView):
         return Response(
             {
                 "existing": False,
+                "has_invitation": has_invitation,
                 "status": ("MAGIC_CODE" if smtp_configured and is_magic_login_enabled else "CREDENTIAL"),
             },
             status=status.HTTP_200_OK,

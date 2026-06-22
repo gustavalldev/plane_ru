@@ -64,6 +64,14 @@ export const AuthFormRoot = observer(function AuthFormRoot(props: TAuthFormRoot)
           } else if (response.status === "CREDENTIAL") {
             setAuthStep(EAuthSteps.PASSWORD);
           }
+        } else if (response.has_invitation) {
+          setAuthMode(EAuthModes.SIGN_UP);
+          if (response.status === "MAGIC_CODE") {
+            setAuthStep(EAuthSteps.UNIQUE_CODE);
+            generateEmailUniqueCode(data.email);
+          } else if (response.status === "CREDENTIAL") {
+            setAuthStep(EAuthSteps.PASSWORD);
+          }
         } else {
           setAuthMode(EAuthModes.SIGN_IN);
           setAuthStep(EAuthSteps.EMAIL);
