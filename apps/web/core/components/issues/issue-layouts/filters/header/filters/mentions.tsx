@@ -58,7 +58,7 @@ export const FilterMentions = observer(function FilterMentions(props: Props) {
   return (
     <>
       <FilterHeader
-        title={`Mention${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
+        title={`Упоминание${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
         isPreviewEnabled={previewEnabled}
         handleIsPreviewEnabled={() => setPreviewEnabled(!previewEnabled)}
       />
@@ -74,7 +74,7 @@ export const FilterMentions = observer(function FilterMentions(props: Props) {
                   return (
                     <FilterOption
                       key={`mentions-${member.id}`}
-                      isChecked={appliedFilters?.includes(member.id) ? true : false}
+                      isChecked={appliedFilters?.includes(member.id) ?? false}
                       onClick={() => handleUpdate(member.id)}
                       icon={
                         <Avatar
@@ -84,7 +84,7 @@ export const FilterMentions = observer(function FilterMentions(props: Props) {
                           size={"md"}
                         />
                       }
-                      title={currentUser?.id === member.id ? "You" : member?.display_name}
+                      title={currentUser?.id === member.id ? "Вы" : member?.display_name}
                     />
                   );
                 })}
@@ -94,7 +94,7 @@ export const FilterMentions = observer(function FilterMentions(props: Props) {
                     className="ml-8 text-11 font-medium text-accent-primary"
                     onClick={handleViewToggle}
                   >
-                    {itemsToRender === sortedOptions.length ? "View less" : "View all"}
+                    {itemsToRender === sortedOptions.length ? "Свернуть" : "Показать все"}
                   </button>
                 )}
               </>

@@ -30,8 +30,8 @@ export const IssueDescriptionActivity = observer(function IssueDescriptionActivi
       ends={ends}
     >
       <>
-        updated the description
-        {showIssue ? ` of ` : ``}
+        обновил описание
+        {showIssue ? ` у ` : ``}
         {showIssue && <IssueLink activityId={activityId} />}.
       </>
     </IssueActivityBlockComponent>

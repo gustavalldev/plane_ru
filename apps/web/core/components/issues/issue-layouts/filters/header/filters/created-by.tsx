@@ -58,7 +58,7 @@ export const FilterCreatedBy = observer(function FilterCreatedBy(props: Props) {
   return (
     <>
       <FilterHeader
-        title={`Created by${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
+        title={`Создал${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
         isPreviewEnabled={previewEnabled}
         handleIsPreviewEnabled={() => setPreviewEnabled(!previewEnabled)}
       />
@@ -74,10 +74,10 @@ export const FilterCreatedBy = observer(function FilterCreatedBy(props: Props) {
                   return (
                     <FilterOption
                       key={`created-by-${member.id}`}
-                      isChecked={appliedFilters?.includes(member.id) ? true : false}
+                      isChecked={appliedFilters?.includes(member.id) ?? false}
                       onClick={() => handleUpdate(member.id)}
                       icon={<Avatar name={member.display_name} src={getFileURL(member.avatar_url)} size="md" />}
-                      title={currentUser?.id === member.id ? "You" : member?.display_name}
+                      title={currentUser?.id === member.id ? "Вы" : member?.display_name}
                     />
                   );
                 })}
@@ -87,7 +87,7 @@ export const FilterCreatedBy = observer(function FilterCreatedBy(props: Props) {
                     className="ml-8 text-11 font-medium text-accent-primary"
                     onClick={handleViewToggle}
                   >
-                    {itemsToRender === sortedOptions.length ? "View less" : "View all"}
+                    {itemsToRender === sortedOptions.length ? "Свернуть" : "Показать все"}
                   </button>
                 )}
               </>

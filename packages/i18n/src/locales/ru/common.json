@@ -148,6 +148,7 @@
   "your_work": "Ваша работа",
   "drafts": "Черновики",
   "projects": "Проекты",
+  "display": "Отображение",
   "views": "Представления",
   "archives": "Архивы",
   "settings": "Настройки",
@@ -717,11 +718,11 @@
     "details": "Подробности",
     "project_structure": "Структура проекта",
     "custom_properties": "Пользовательские свойства",
-    "your_profile": "Your profile",
-    "developer": "Developer",
-    "work_structure": "Work structure",
-    "execution": "Execution",
-    "administration": "Administration"
+    "your_profile": "Ваш профиль",
+    "developer": "Разработчик",
+    "work_structure": "Структура работы",
+    "execution": "Выполнение",
+    "administration": "Администрирование"
   },
   "chart": {
     "x_axis": "Ось X",

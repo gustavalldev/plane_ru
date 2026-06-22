@@ -1040,7 +1040,7 @@ class ModuleArchiveUnarchiveAPIEndpoint(BaseAPIView):
         module = Module.objects.get(pk=pk, project_id=project_id, workspace__slug=slug)
         if module.status not in ["completed", "cancelled"]:
             return Response(
-                {"error": "Only completed or cancelled modules can be archived"},
+                {"error": "Архивировать можно только завершенные или отмененные модули"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         module.archived_at = timezone.now()

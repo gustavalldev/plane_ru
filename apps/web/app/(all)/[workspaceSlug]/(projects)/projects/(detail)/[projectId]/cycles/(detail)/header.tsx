@@ -75,7 +75,7 @@ export const CycleIssuesHeader = observer(function CycleIssuesHeader() {
 
   const { setValue, storedValue } = useLocalStorage("cycle_sidebar_collapsed", false);
 
-  const isSidebarCollapsed = storedValue ? (storedValue === true ? true : false) : false;
+  const isSidebarCollapsed = storedValue ? storedValue === true : false;
   const toggleSidebar = () => {
     setValue(!isSidebarCollapsed);
   };
@@ -232,7 +232,7 @@ export const CycleIssuesHeader = observer(function CycleIssuesHeader() {
             {canUserCreateIssue && (
               <>
                 <Button onClick={() => setAnalyticsModal(true)} variant="secondary" size="lg">
-                  <span className="hidden @4xl:flex">Analytics</span>
+                  <span className="hidden @4xl:flex">{t("common.analytics")}</span>
                   <span className="@4xl:hidden">
                     <ChartNoAxesColumn className="size-3.5" />
                   </span>

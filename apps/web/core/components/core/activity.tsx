@@ -56,7 +56,7 @@ export function IssueLink({ activity }: { activity: IIssueActivity }) {
 
   return (
     <Tooltip
-      tooltipContent={activity?.issue_detail ? activity.issue_detail.name : "This work item has been deleted"}
+      tooltipContent={activity?.issue_detail ? activity.issue_detail.name : "Этот рабочий элемент удален"}
       isMobile={isMobile}
     >
       {activity?.issue_detail ? (
@@ -72,7 +72,7 @@ export function IssueLink({ activity }: { activity: IIssueActivity }) {
         </a>
       ) : (
         <span className="inline-flex items-center gap-1 font-medium whitespace-nowrap text-primary">
-          {" a work item"}{" "}
+          {" рабочий элемент"}{" "}
         </span>
       )}
     </Tooltip>
@@ -207,11 +207,11 @@ const activityDetails: {
       if (activity.verb === "created")
         return (
           <>
-            uploaded a new attachment
+            добавил новое вложение
             {showIssue && (
               <>
                 {" "}
-                to <IssueLink activity={activity} />
+                к <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -219,11 +219,11 @@ const activityDetails: {
       else
         return (
           <>
-            removed an attachment
+            удалил вложение
             {showIssue && (
               <>
                 {" "}
-                from <IssueLink activity={activity} />
+                из <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -234,11 +234,11 @@ const activityDetails: {
   description: {
     message: (activity, showIssue) => (
       <>
-        updated the description
+        обновил описание
         {showIssue && (
           <>
             {" "}
-            of <IssueLink activity={activity} />
+            у <IssueLink activity={activity} />
           </>
         )}
       </>
@@ -325,7 +325,7 @@ const activityDetails: {
       if (activity.old_value === "")
         return (
           <span className="overflow-hidden">
-            added a new label{" "}
+            добавил новую метку{" "}
             <span className="inline-flex items-center gap-2 rounded-full border border-strong px-2 py-0.5 text-11">
               <LabelPill labelId={activity.new_identifier ?? ""} workspaceSlug={workspaceSlug} />
               <span className="line-clamp-1 flex-shrink font-medium break-all text-primary">{activity.new_value}</span>
@@ -333,7 +333,7 @@ const activityDetails: {
             {showIssue && (
               <span className="">
                 {" "}
-                to <IssueLink activity={activity} />
+                к <IssueLink activity={activity} />
               </span>
             )}
           </span>
@@ -341,7 +341,7 @@ const activityDetails: {
       else
         return (
           <>
-            removed the label{" "}
+            удалил метку{" "}
             <span className="inline-flex items-center gap-2 rounded-full border border-strong px-2 py-0.5 text-11">
               <LabelPill labelId={activity.old_identifier ?? ""} workspaceSlug={workspaceSlug} />
               <span className="line-clamp-1 flex-shrink font-medium break-all text-primary">{activity.old_value}</span>

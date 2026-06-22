@@ -5,6 +5,7 @@
  */
 
 import { differenceInDays, format, formatDistanceToNow, isAfter, isEqual, isValid, parseISO } from "date-fns";
+import { ru } from "date-fns/locale";
 import { isNumber } from "lodash-es";
 
 // Format Date Helpers
@@ -175,7 +176,7 @@ export const calculateTimeAgo = (time: string | number | Date | null): string =>
   // return if undefined
   if (!parsedTime) return ""; // Return empty string for invalid dates
   // Format the time in the form of amount of time passed since the event happened
-  const distance = formatDistanceToNow(parsedTime, { addSuffix: true });
+  const distance = formatDistanceToNow(parsedTime, { addSuffix: true, locale: ru });
   return distance;
 };
 
@@ -284,7 +285,7 @@ export const getDate = (date: string | Date | undefined | null): Date | undefine
   try {
     if (!date || date === "") return;
 
-    if (typeof date !== "string" && !(date instanceof String)) return date;
+    if (typeof date !== "string") return date;
 
     const [yearString, monthString, dayString] = date.substring(0, 10).split("-");
     const year = parseInt(yearString);
@@ -399,14 +400,17 @@ export const generateDateArray = (startDate: string | Date, endDate: string | Da
   // Create an empty array to store the dates
   const dateArray = [];
 
-  // Use a while loop to generate dates between the range
-  while (start <= end) {
+  const endTime = end.getTime();
+
+  for (
+    let currentDate = new Date(start);
+    currentDate.getTime() <= endTime;
+    currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1)
+  ) {
     // Push the current date (converted to ISO string for consistency)
     dateArray.push({
-      date: new Date(start).toISOString().split("T")[0],
+      date: new Date(currentDate).toISOString().split("T")[0],
     });
-    // Increment the date by 1 day (86400000 milliseconds)
-    start.setDate(start.getDate() + 1);
   }
 
   return dateArray;
