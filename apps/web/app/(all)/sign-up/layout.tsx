@@ -8,7 +8,7 @@ import { Outlet } from "react-router";
 import type { Route } from "./+types/layout";
 
 export const meta: Route.MetaFunction = () => [
-  { title: "Sign in - Plane" },
+  { title: "Вход - Plane" },
   { name: "robots", content: "index, nofollow" },
 ];
 

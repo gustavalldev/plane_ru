@@ -7,7 +7,7 @@
 import { observer } from "mobx-react";
 import { useSearchParams } from "next/navigation";
 import useSWR from "swr";
-import { Boxes, Share2, Star, User2 } from "lucide-react";
+import { Boxes, User2 } from "lucide-react";
 import { CheckIcon, CloseIcon } from "@plane/propel/icons";
 // components
 import { LogoSpinner } from "@/components/common/logo-spinner";
@@ -26,6 +26,9 @@ import { WorkspaceService } from "@/services/workspace.service";
 
 // service initialization
 const workspaceService = new WorkspaceService();
+
+const WORKSPACE_DESCRIPTION =
+  "Рабочее пространство помогает создавать проекты, совместно работать над задачами и организовывать рабочие процессы.";
 
 function WorkspaceInvitationPage() {
   // router
@@ -58,6 +61,7 @@ function WorkspaceInvitationPage() {
         } else {
           router.push("/");
         }
+        return undefined;
       })
       .catch((err: unknown) => console.error(err));
   };
@@ -71,6 +75,7 @@ function WorkspaceInvitationPage() {
       })
       .then(() => {
         router.push("/");
+        return undefined;
       })
       .catch((err: unknown) => console.error(err));
   };
@@ -81,42 +86,36 @@ function WorkspaceInvitationPage() {
         {invitationDetail && !invitationDetail.responded_at ? (
           error ? (
             <div className="shadow-2xl flex w-full flex-col space-y-4 rounded-sm border border-subtle bg-surface-1 px-4 py-8 text-center md:w-1/3">
-              <h2 className="text-18 uppercase">INVITATION NOT FOUND</h2>
+              <h2 className="text-18 uppercase">ПРИГЛАШЕНИЕ НЕ НАЙДЕНО</h2>
             </div>
           ) : (
             <EmptySpace
-              title={`You have been invited to ${invitationDetail.workspace.name}`}
-              description="Your workspace is where you'll create projects, collaborate on your work items, and organize different streams of work in your Plane account."
+              title={`Вас пригласили в ${invitationDetail.workspace.name}`}
+              description={WORKSPACE_DESCRIPTION}
             >
-              <EmptySpaceItem Icon={CheckIcon} title="Accept" action={handleAccept} />
-              <EmptySpaceItem Icon={CloseIcon} title="Ignore" action={handleReject} />
+              <EmptySpaceItem Icon={CheckIcon} title="Принять" action={handleAccept} />
+              <EmptySpaceItem Icon={CloseIcon} title="Отклонить" action={handleReject} />
             </EmptySpace>
           )
         ) : error || invitationDetail?.responded_at ? (
           invitationDetail?.accepted ? (
             <EmptySpace
-              title={`You are already a member of ${invitationDetail.workspace.name}`}
-              description="Your workspace is where you'll create projects, collaborate on your work items, and organize different streams of work in your Plane account."
+              title={`Вы уже участник ${invitationDetail.workspace.name}`}
+              description={WORKSPACE_DESCRIPTION}
             >
-              <EmptySpaceItem Icon={Boxes} title="Continue to home" href="/" />
+              <EmptySpaceItem Icon={Boxes} title="Перейти на главную" href="/" />
             </EmptySpace>
           ) : (
             <EmptySpace
-              title="This invitation link is not active anymore."
-              description="Your workspace is where you'll create projects, collaborate on your work items, and organize different streams of work in your Plane account."
-              link={{ text: "Or start from an empty project", href: "/" }}
+              title="Эта ссылка приглашения больше не активна."
+              description={WORKSPACE_DESCRIPTION}
+              link={{ text: "Вернуться на главную", href: "/" }}
             >
               {!currentUser ? (
-                <EmptySpaceItem Icon={User2} title="Sign in to continue" href="/" />
+                <EmptySpaceItem Icon={User2} title="Войти, чтобы продолжить" href="/" />
               ) : (
-                <EmptySpaceItem Icon={Boxes} title="Continue to home" href="/" />
+                <EmptySpaceItem Icon={Boxes} title="Перейти на главную" href="/" />
               )}
-              <EmptySpaceItem Icon={Star} title="Star us on GitHub" href="https://github.com/makeplane" />
-              <EmptySpaceItem
-                Icon={Share2}
-                title="Join our community of active creators"
-                href="https://forum.plane.so"
-              />
             </EmptySpace>
           )
         ) : (
