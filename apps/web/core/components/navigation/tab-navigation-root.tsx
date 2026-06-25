@@ -109,6 +109,7 @@ export const TabNavigationRoot = observer(function TabNavigationRoot(props: TTab
   // Filter and sort navigation items
   const allNavigationItems = navigationItems
     .filter((item) => item.shouldRender)
+    // eslint-disable-next-line unicorn/no-array-sort -- filter returns a copy, and the app TS target does not include toSorted.
     .sort((a, b) => a.sortOrder - b.sortOrder);
 
   // Split items into two categories:
@@ -173,7 +174,7 @@ export const TabNavigationRoot = observer(function TabNavigationRoot(props: TTab
       <div className="flex size-full items-center gap-3 overflow-hidden">
         <div className="flex shrink-0 items-center gap-2">
           <ProjectHeader workspaceSlug={workspaceSlug} projectId={projectId} />
-          <div className="shrink-0">
+          <div className="hidden shrink-0 md:block">
             <ProjectActionsMenu
               workspaceSlug={workspaceSlug}
               project={project}
