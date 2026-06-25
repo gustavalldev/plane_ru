@@ -65,10 +65,10 @@ export const IssuesHeader = observer(function IssuesHeader() {
   );
 
   return (
-    <Header>
-      <Header.LeftItem>
-        <div className="flex items-center gap-2.5">
-          <Breadcrumbs onBack={() => router.back()} isLoading={loader === "init-loader"} className="flex-grow-0">
+    <Header className="gap-2 overflow-hidden">
+      <Header.LeftItem className="max-w-full min-w-0 flex-1 overflow-hidden">
+        <div className="flex min-w-0 items-center gap-1.5 sm:gap-2.5">
+          <Breadcrumbs onBack={() => router.back()} isLoading={loader === "init-loader"} className="min-w-0 flex-1">
             <CommonProjectBreadcrumbs workspaceSlug={workspaceSlug?.toString()} projectId={projectId?.toString()} />
             <Breadcrumbs.Item
               component={
@@ -88,7 +88,9 @@ export const IssuesHeader = observer(function IssuesHeader() {
               tooltipContent={t("project.work_items_count", { count: issuesCount })}
               position="bottom"
             >
-              <CountChip count={issuesCount} />
+              <span className="hidden sm:inline-flex">
+                <CountChip count={issuesCount} />
+              </span>
             </Tooltip>
           ) : null}
         </div>
@@ -107,7 +109,7 @@ export const IssuesHeader = observer(function IssuesHeader() {
           <></>
         )}
       </Header.LeftItem>
-      <Header.RightItem>
+      <Header.RightItem className="min-w-0 flex-shrink-0 overflow-x-auto">
         <div className="hidden gap-2 md:flex">
           <HeaderFilters
             projectId={projectId}
@@ -125,7 +127,7 @@ export const IssuesHeader = observer(function IssuesHeader() {
             }}
             data-ph-element={WORK_ITEM_TRACKER_ELEMENTS.HEADER_ADD_BUTTON.WORK_ITEMS}
           >
-            <div className="block sm:hidden">{t("issue.label", { count: 1 })}</div>
+            <div className="block sm:hidden">Создать</div>
             <div className="hidden sm:block">{t("issue.add.label")}</div>
           </Button>
         )}

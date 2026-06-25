@@ -113,18 +113,18 @@ const WorkspaceMembersSettingsPage = observer(function WorkspaceMembersSettingsP
           "opacity-60": !canPerformWorkspaceMemberActions,
         })}
       >
-        <div className="flex items-center justify-between gap-4 pb-3.5">
-          <h4 className="flex items-center gap-2.5 text-h3-medium">
+        <div className="flex flex-col gap-3 pb-3.5 md:flex-row md:items-center md:justify-between md:gap-4">
+          <h4 className="flex min-w-0 items-center gap-2.5 text-h3-medium">
             {t("workspace_settings.settings.members.title")}
             {workspaceMemberIds && workspaceMemberIds.length > 0 && (
               <CountChip count={workspaceMemberIds.length} className="m-auto h-5" />
             )}
           </h4>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 rounded-md border border-subtle bg-surface-1 px-2.5 py-1.5">
+          <div className="flex w-full min-w-0 flex-col gap-2 md:w-auto md:flex-row md:items-center">
+            <div className="flex w-full min-w-0 items-center gap-1.5 rounded-md border border-subtle bg-surface-1 px-2.5 py-1.5 md:w-auto md:min-w-0">
               <SearchIcon className="h-3.5 w-3.5 text-placeholder" />
               <input
-                className="w-full max-w-[234px] border-none bg-transparent text-body-xs-regular outline-none placeholder:text-placeholder"
+                className="w-full border-none bg-transparent text-body-xs-regular outline-none placeholder:text-placeholder md:w-full md:max-w-[234px]"
                 placeholder={`${t("search")}...`}
                 value={searchQuery}
                 // eslint-disable-next-line jsx-a11y/no-autofocus
@@ -132,18 +132,20 @@ const WorkspaceMembersSettingsPage = observer(function WorkspaceMembersSettingsP
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <MemberListFiltersDropdown
-              appliedFilters={appliedRoleFilters}
-              handleUpdate={handleRoleFilterUpdate}
-              memberType="workspace"
-            />
-            <MembersActivityButton workspaceSlug={workspaceSlug} />
-            {canPerformWorkspaceAdminActions && (
-              <Button variant="primary" size="lg" onClick={() => setInviteModal(true)}>
-                {t("workspace_settings.settings.members.add_member")}
-              </Button>
-            )}
-            <BillingActionsButton canPerformWorkspaceAdminActions={canPerformWorkspaceAdminActions} />
+            <div className="horizontal-scrollbar -mx-1 flex min-w-0 items-center gap-2 overflow-x-auto px-1 pb-1 md:mx-0 md:overflow-visible md:px-0 md:pb-0">
+              <MemberListFiltersDropdown
+                appliedFilters={appliedRoleFilters}
+                handleUpdate={handleRoleFilterUpdate}
+                memberType="workspace"
+              />
+              <MembersActivityButton workspaceSlug={workspaceSlug} />
+              {canPerformWorkspaceAdminActions && (
+                <Button variant="primary" size="lg" className="flex-shrink-0" onClick={() => setInviteModal(true)}>
+                  {t("workspace_settings.settings.members.add_member")}
+                </Button>
+              )}
+              <BillingActionsButton canPerformWorkspaceAdminActions={canPerformWorkspaceAdminActions} />
+            </div>
           </div>
         </div>
         <WorkspaceMembersList searchQuery={searchQuery} isAdmin={canPerformWorkspaceAdminActions} />

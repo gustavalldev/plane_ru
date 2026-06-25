@@ -14,6 +14,7 @@ import { Table } from "@plane/ui";
 // components
 import { MembersLayoutLoader } from "@/components/ui/loader/layouts/members-layout-loader";
 import { ConfirmWorkspaceMemberRemove } from "@/components/workspace/confirm-workspace-member-remove";
+import { EditMemberNameModal } from "@/components/workspace/settings/edit-member-name-modal";
 import type { RowData } from "@/components/workspace/settings/member-columns";
 // hooks
 import { useMember } from "@/hooks/store/use-member";
@@ -29,7 +30,8 @@ type Props = {
 
 export const WorkspaceMembersListItem = observer(function WorkspaceMembersListItem(props: Props) {
   const { memberDetails } = props;
-  const { columns, workspaceSlug, removeMemberModal, setRemoveMemberModal } = useMemberColumns();
+  const { columns, workspaceSlug, editMemberModal, setEditMemberModal, removeMemberModal, setRemoveMemberModal } =
+    useMemberColumns();
   // router
   const router = useAppRouter();
   // store hooks
@@ -103,6 +105,12 @@ export const WorkspaceMembersListItem = observer(function WorkspaceMembersListIt
           onSubmit={() => handleRemove(removeMemberModal.member.id)}
         />
       )}
+      <EditMemberNameModal
+        isOpen={!!editMemberModal}
+        onClose={() => setEditMemberModal(null)}
+        rowData={editMemberModal}
+        workspaceSlug={workspaceSlug}
+      />
       <Table<RowData>
         columns={columns ?? []}
         data={

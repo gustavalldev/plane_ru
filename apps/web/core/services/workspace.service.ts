@@ -6,6 +6,7 @@
 
 import { API_BASE_URL } from "@plane/constants";
 import type {
+  IUserLite,
   IWorkspace,
   IWorkspaceMemberMe,
   IWorkspaceMember,
@@ -144,7 +145,9 @@ export class WorkspaceService extends APIService {
   async updateWorkspaceMember(
     workspaceSlug: string,
     memberId: string,
-    data: Partial<IWorkspaceMember>
+    data: Partial<Omit<IWorkspaceMember, "member">> & {
+      member?: Partial<Pick<IUserLite, "display_name" | "first_name" | "last_name">>;
+    }
   ): Promise<IWorkspaceMember> {
     return this.patch(`/api/workspaces/${workspaceSlug}/members/${memberId}/`, data)
       .then((response) => response?.data)

@@ -16,6 +16,7 @@ from plane.app.permissions import WorkspaceEntityPermission, allow_permission, R
 # Module imports
 from plane.app.serializers import (
     ProjectMemberRoleSerializer,
+    UserAdminLiteSerializer,
     WorkspaceMemberAdminSerializer,
     WorkspaceMemberMeSerializer,
     WorkSpaceMemberSerializer,
@@ -23,6 +24,7 @@ from plane.app.serializers import (
 from plane.app.views.base import BaseAPIView
 from plane.db.models import Project, ProjectMember, WorkspaceMember, DraftIssue
 from plane.utils.cache import invalidate_cache
+from plane.utils.url import contains_url
 
 from .. import BaseViewSet
 
@@ -78,7 +80,46 @@ class WorkSpaceMemberViewSet(BaseViewSet):
         workspace_member = WorkspaceMember.objects.get(
             pk=pk, workspace__slug=slug, member__is_bot=False, is_active=True
         )
-        if request.user.id == workspace_member.member_id:
+        member_payload = request.data.get("member", {})
+        if member_payload is None:
+            member_payload = {}
+        if not isinstance(member_payload, dict):
+            return Response(
+                {"error": "Member data must be an object"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        allowed_member_fields = {"display_name", "first_name", "last_name"}
+        member_updates = {field: member_payload[field] for field in allowed_member_fields if field in member_payload}
+
+        for field, value in member_updates.items():
+            if value is None:
+                member_updates[field] = ""
+                continue
+            if not isinstance(value, str):
+                return Response(
+                    {"error": f"{field} must be a string"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            member_updates[field] = value.strip()
+            if len(member_updates[field]) > 255:
+                return Response(
+                    {"error": f"{field} must be 255 characters or fewer"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if contains_url(member_updates[field]):
+                return Response(
+                    {"error": f"{field} cannot contain a URL"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        if "display_name" in member_updates and not member_updates["display_name"]:
+            return Response(
+                {"error": "Display name is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if "role" in request.data and request.user.id == workspace_member.member_id:
             return Response(
                 {"error": "You cannot update your own role"},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -88,10 +129,20 @@ class WorkSpaceMemberViewSet(BaseViewSet):
         if "role" in request.data and int(request.data.get("role")) == 5:
             ProjectMember.objects.filter(workspace__slug=slug, member_id=workspace_member.member_id).update(role=5)
 
-        serializer = WorkSpaceMemberSerializer(workspace_member, data=request.data, partial=True)
+        workspace_member_payload = request.data.copy()
+        workspace_member_payload.pop("member", None)
+        serializer = WorkSpaceMemberSerializer(workspace_member, data=workspace_member_payload, partial=True)
 
         if serializer.is_valid():
             serializer.save()
+            if member_updates:
+                for field, value in member_updates.items():
+                    setattr(workspace_member.member, field, value)
+                workspace_member.member.save(update_fields=[*member_updates.keys(), "updated_at"])
+                workspace_member.member.refresh_from_db()
+                response_data = serializer.data
+                response_data["member"] = UserAdminLiteSerializer(workspace_member.member).data
+                return Response(response_data, status=status.HTTP_200_OK)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

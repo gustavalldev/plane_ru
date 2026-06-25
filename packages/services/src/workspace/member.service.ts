@@ -5,7 +5,7 @@
  */
 
 import { API_BASE_URL } from "@plane/constants";
-import type { IWorkspaceMemberMe, IWorkspaceMember, IUserProjectsRole } from "@plane/types";
+import type { IUserLite, IWorkspaceMemberMe, IWorkspaceMember, IUserProjectsRole } from "@plane/types";
 import { APIService } from "../api.service";
 
 /**
@@ -59,7 +59,13 @@ export class WorkspaceMemberService extends APIService {
    * @returns {Promise<IWorkspaceMember>} Promise resolving to the updated member information
    * @throws {Error} If the API request fails
    */
-  async update(workspaceSlug: string, memberId: string, data: Partial<IWorkspaceMember>): Promise<IWorkspaceMember> {
+  async update(
+    workspaceSlug: string,
+    memberId: string,
+    data: Partial<Omit<IWorkspaceMember, "member">> & {
+      member?: Partial<Pick<IUserLite, "display_name" | "first_name" | "last_name">>;
+    }
+  ): Promise<IWorkspaceMember> {
     return this.patch(`/api/workspaces/${workspaceSlug}/members/${memberId}/`, data)
       .then((response) => response?.data)
       .catch((error) => {

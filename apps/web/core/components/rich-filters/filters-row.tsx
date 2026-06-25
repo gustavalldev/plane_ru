@@ -125,10 +125,10 @@ export const FiltersRow = observer(function FiltersRow<K extends TFilterProperty
   );
 
   const mainContent = (
-    <div className="flex w-full items-start gap-2 rounded-lg bg-layer-1 px-4 py-2">
-      <div className="flex w-full flex-wrap items-center gap-2">{leftContent}</div>
+    <div className="horizontal-scrollbar flex w-full items-start gap-2 overflow-x-auto rounded-lg bg-layer-1 px-3 py-2 md:px-4">
+      <div className="flex min-w-max flex-nowrap items-center gap-2 md:min-w-0 md:flex-wrap">{leftContent}</div>
       <div
-        className={cn("flex items-center gap-2 border-l border-subtle pl-4", {
+        className={cn("flex flex-shrink-0 items-center gap-2 border-l border-subtle pl-3 md:pl-4", {
           "border-l-transparent pl-0": !hasAvailableOperations,
         })}
       >

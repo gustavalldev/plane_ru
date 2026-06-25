@@ -9,12 +9,13 @@ import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 
 import { Disclosure } from "@headlessui/react";
+import { Pencil } from "lucide-react";
 // plane imports
 import { ROLE, EUserPermissions, EUserPermissionsLevel, MEMBER_TRACKER_ELEMENTS } from "@plane/constants";
 import { TrashIcon, SuspendedUserIcon } from "@plane/propel/icons";
 import { Pill, EPillVariant, EPillSize } from "@plane/propel/pill";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
-import type { IUser, IWorkspaceMember } from "@plane/types";
+import type { IUser, IUserLite, TLoginMediums } from "@plane/types";
 // plane ui
 import { CustomSelect, PopoverMenu } from "@plane/ui";
 // helpers
@@ -23,8 +24,12 @@ import { getFileURL } from "@plane/utils";
 import { useMember } from "@/hooks/store/use-member";
 import { useUser, useUserPermissions } from "@/hooks/store/user";
 
+type TWorkspaceMemberUser = IUserLite & {
+  last_login_medium?: TLoginMediums;
+};
+
 export interface RowData {
-  member: IWorkspaceMember;
+  member: TWorkspaceMemberUser;
   role: EUserPermissions;
   is_active: boolean;
 }
@@ -34,6 +39,7 @@ type NameProps = {
   workspaceSlug: string;
   isAdmin: boolean;
   currentUser: IUser | undefined;
+  setEditMemberModal: (rowData: RowData) => void;
   setRemoveMemberModal: (rowData: RowData) => void;
 };
 
@@ -43,17 +49,19 @@ type AccountTypeProps = {
 };
 
 export function NameColumn(props: NameProps) {
-  const { rowData, workspaceSlug, isAdmin, currentUser, setRemoveMemberModal } = props;
+  const { rowData, workspaceSlug, isAdmin, currentUser, setEditMemberModal, setRemoveMemberModal } = props;
   // derived values
   const { avatar_url, display_name, email, first_name, id, last_name } = rowData.member;
   const isSuspended = rowData.is_active === false;
+  const fullName = `${first_name ?? ""} ${last_name ?? ""}`.trim();
+  const primaryName = display_name || fullName || email || "Без имени";
 
   return (
     <Disclosure>
       {() => (
         <div className="group relative">
-          <div className="flex w-72 items-center justify-between gap-x-4 gap-y-2">
-            <div className="flex flex-1 items-center gap-x-2 gap-y-2">
+          <div className="flex max-w-80 min-w-64 items-center justify-between gap-x-4 gap-y-2">
+            <div className="flex min-w-0 flex-1 items-center gap-x-2 gap-y-2">
               {isSuspended ? (
                 <div className="rounded-full bg-layer-1">
                   <SuspendedUserIcon className="size-6 text-placeholder" />
@@ -75,9 +83,10 @@ export function NameColumn(props: NameProps) {
                   </span>
                 </Link>
               )}
-              <span className={isSuspended ? "text-placeholder" : ""}>
-                {first_name} {last_name}
-              </span>
+              <div className={isSuspended ? "min-w-0 text-placeholder" : "min-w-0"}>
+                <span className="block truncate text-primary">{primaryName}</span>
+                {email && <span className="block truncate text-11 text-tertiary">{email}</span>}
+              </div>
             </div>
 
             {!isSuspended && (isAdmin || id === currentUser?.id) && (
@@ -85,22 +94,27 @@ export function NameColumn(props: NameProps) {
                 data={[""]}
                 keyExtractor={(item) => item}
                 popoverClassName="justify-end"
-                buttonClassName="outline-none	origin-center rotate-90 size-8 aspect-square flex-shrink-0 grid place-items-center opacity-0 group-hover:opacity-100 transition-opacity"
+                buttonClassName="outline-none origin-center rotate-90 size-8 aspect-square flex-shrink-0 grid place-items-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                 render={() => (
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    className="flex cursor-pointer items-center gap-x-3"
-                    onClick={() => setRemoveMemberModal(rowData)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        setRemoveMemberModal(rowData);
-                      }
-                    }}
-                    data-ph-element={MEMBER_TRACKER_ELEMENTS.WORKSPACE_MEMBER_TABLE_CONTEXT_MENU}
-                  >
-                    <TrashIcon className="size-3.5 align-middle" /> {id === currentUser?.id ? "Leave " : "Remove "}
+                  <div className="space-y-1">
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        className="flex cursor-pointer items-center gap-x-3 rounded-sm px-1 py-1 hover:bg-layer-1"
+                        onClick={() => setEditMemberModal(rowData)}
+                      >
+                        <Pencil className="size-3.5 align-middle" /> Изменить имя
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className="flex cursor-pointer items-center gap-x-3 rounded-sm px-1 py-1 hover:bg-layer-1"
+                      onClick={() => setRemoveMemberModal(rowData)}
+                      data-ph-element={MEMBER_TRACKER_ELEMENTS.WORKSPACE_MEMBER_TABLE_CONTEXT_MENU}
+                    >
+                      <TrashIcon className="size-3.5 align-middle" />{" "}
+                      {id === currentUser?.id ? "Покинуть workspace" : "Удалить"}
+                    </button>
                   </div>
                 )}
               />
@@ -150,14 +164,14 @@ export const AccountTypeColumn = observer(function AccountTypeColumn(props: Acco
           name="role"
           control={control}
           rules={{ required: "Role is required." }}
-          render={({ field: { value } }) => (
+          render={({ field: { value: roleValue } }) => (
             <CustomSelect
-              value={value as EUserPermissions}
-              onChange={async (value: EUserPermissions) => {
+              value={roleValue as EUserPermissions}
+              onChange={async (newRole: EUserPermissions) => {
                 if (!workspaceSlug) return;
                 try {
                   await updateMember(workspaceSlug.toString(), rowData.member.id, {
-                    role: value as unknown as EUserPermissions,
+                    role: newRole as unknown as EUserPermissions,
                   });
                 } catch (err: unknown) {
                   const error = err as { error?: string | string[] };

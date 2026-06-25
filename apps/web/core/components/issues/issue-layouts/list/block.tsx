@@ -207,8 +207,8 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
           }
         }}
       >
-        <div className="flex w-full gap-2 truncate">
-          <div className="flex flex-grow items-center gap-0.5 truncate">
+        <div className="flex w-full min-w-0 gap-2">
+          <div className="flex min-w-0 flex-1 items-start gap-0.5 md:items-center">
             <div className="flex items-center gap-1" style={isSubIssue ? { marginLeft } : {}}>
               {/* select checkbox */}
               {projectId && canSelectIssues && !isEpic && (
@@ -282,7 +282,9 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
               disabled={isCurrentBlockDragging}
               renderByDefault={false}
             >
-              <p className="cursor-pointer truncate text-body-xs-medium text-primary">{issue.name}</p>
+              <p className="line-clamp-2 min-w-0 cursor-pointer text-body-xs-medium break-words text-primary md:line-clamp-1 md:truncate">
+                {issue.name}
+              </p>
             </Tooltip>
             {isEpic && displayProperties && (
               <WithDisplayPropertiesHOC
@@ -321,11 +323,16 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
                 isEpic={isEpic}
               />
               <div
+                role="presentation"
                 className={cn("hidden", {
                   "md:flex": isSidebarCollapsed,
                   "lg:flex": !isSidebarCollapsed,
                 })}
                 onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                onKeyDown={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                 }}
