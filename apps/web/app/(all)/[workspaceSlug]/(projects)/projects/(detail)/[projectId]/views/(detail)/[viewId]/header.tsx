@@ -207,7 +207,7 @@ export const ProjectViewIssuesHeader = observer(function ProjectViewIssuesHeader
             }}
             data-ph-element={WORK_ITEM_TRACKER_ELEMENTS.HEADER_ADD_BUTTON.PROJECT_VIEW}
           >
-            {t("common.add_work_item")}
+            {t("add_work_item")}
           </Button>
         )}
         <div className="hidden md:block">

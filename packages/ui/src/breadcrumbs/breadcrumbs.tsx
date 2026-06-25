@@ -68,9 +68,17 @@ function Breadcrumbs({ className, children, onBack, isLoading = false }: Breadcr
         <>
           <div className="flex items-center gap-2.5 p-1">
             {onBack && (
-              <span onClick={onBack} className="text-secondary">
-                ...
-              </span>
+              <button
+                type="button"
+                onClick={onBack}
+                aria-label="Back"
+                className="flex size-6 items-center justify-center rounded-sm text-secondary hover:bg-layer-transparent-hover"
+              >
+                <ChevronRightIcon
+                  className="h-3.5 w-3.5 flex-shrink-0 rotate-180 text-placeholder"
+                  aria-hidden="true"
+                />
+              </button>
             )}
             <ChevronRightIcon className="h-3.5 w-3.5 flex-shrink-0 text-placeholder" aria-hidden="true" />
           </div>
@@ -129,7 +137,12 @@ type BreadcrumbLabelProps = {
 function BreadcrumbLabel(props: BreadcrumbLabelProps) {
   const { children, className } = props;
   return (
-    <div className={cn("relative line-clamp-1 block max-w-[150px] truncate overflow-hidden", className)}>
+    <div
+      className={cn(
+        "relative line-clamp-1 block max-w-[150px] truncate overflow-hidden sm:max-w-[220px] md:max-w-[320px] lg:max-w-[420px] xl:max-w-[560px]",
+        className
+      )}
+    >
       {children}
     </div>
   );
