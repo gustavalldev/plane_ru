@@ -105,7 +105,7 @@ export const BaseKanBanRoot = observer(function BaseKanBanRoot(props: IBaseKanBa
         fetchNextIssues(groupId, subgroupId);
       }
     },
-    [fetchNextIssues]
+    [fetchNextIssues, issues]
   );
 
   const groupedIssueIds = issues?.groupedIssueIds;
@@ -130,9 +130,11 @@ export const BaseKanBanRoot = observer(function BaseKanBanRoot(props: IBaseKanBa
   const handleOnDrop = useGroupIssuesDragNDrop(storeType, orderBy, group_by, sub_group_by);
 
   const canEditProperties = useCallback(
-    (projectId: string | undefined) => {
+    (issueProjectId: string | undefined) => {
       const isEditingAllowedBasedOnProject =
-        canEditPropertiesBasedOnProject && projectId ? canEditPropertiesBasedOnProject(projectId) : isEditingAllowed;
+        canEditPropertiesBasedOnProject && issueProjectId
+          ? canEditPropertiesBasedOnProject(issueProjectId)
+          : isEditingAllowed;
 
       return enableInlineEditing && isEditingAllowedBasedOnProject;
     },
@@ -261,11 +263,15 @@ export const BaseKanBanRoot = observer(function BaseKanBanRoot(props: IBaseKanBa
       </div>
       <IssueLayoutHOC layout={EIssueLayoutTypes.KANBAN}>
         <div
-          className={`horizontal-scrollbar relative flex scrollbar-lg h-full w-full bg-surface-2 ${sub_group_by ? "vertical-scrollbar overflow-y-auto" : "overflow-x-auto overflow-y-hidden"}`}
+          className={`md:horizontal-scrollbar relative flex h-full w-full bg-surface-2 md:scrollbar-lg ${
+            sub_group_by
+              ? "vertical-scrollbar overflow-y-auto"
+              : "vertical-scrollbar overflow-x-hidden overflow-y-auto md:overflow-x-auto md:overflow-y-hidden"
+          }`}
           ref={scrollableContainerRef}
         >
-          <div className="relative h-full w-max min-w-full bg-surface-2">
-            <div className="h-full w-max">
+          <div className="relative h-full w-full min-w-full bg-surface-2 md:w-max">
+            <div className="h-full w-full md:w-max">
               <KanBanView
                 issuesMap={issueMap}
                 groupedIssueIds={groupedIssueIds ?? {}}
