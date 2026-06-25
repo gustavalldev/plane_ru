@@ -60,11 +60,11 @@ export function DeleteWebhookModal(props: IDeleteWebhook) {
       handleSubmit={handleDelete}
       isSubmitting={isDeleting}
       isOpen={isOpen}
-      title="Delete webhook"
+      title="Удалить вебхук"
       content={
         <>
-          Are you sure you want to delete this webhook? Future events will not be delivered to this webhook. This action
-          cannot be undone.
+          Вы уверены, что хотите удалить этот вебхук? Новые события больше не будут отправляться в него. Это действие
+          нельзя отменить.
         </>
       }
     />

@@ -147,7 +147,7 @@ export const ProfileSetupStep = observer(function ProfileSetupStep({ handleStepC
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-10">
       {/* Header */}
-      <CommonOnboardingHeader title="Create your profile." description="This is how you will appear in Plane." />
+      <CommonOnboardingHeader title="Создайте профиль." description="Так вас будут видеть в LeadUp." />
 
       {/* Profile Picture Section */}
       <Controller
@@ -207,11 +207,11 @@ export const ProfileSetupStep = observer(function ProfileSetupStep({ handleStepC
             control={control}
             name="first_name"
             rules={{
-              required: "Name is required",
+              required: "Имя обязательно",
               validate: validatePersonName,
               maxLength: {
                 value: 50,
-                message: "Name must be within 50 characters.",
+                message: "Имя должно быть короче 50 символов.",
               },
             }}
             render={({ field: { value, onChange, ref } }) => (
@@ -230,7 +230,7 @@ export const ProfileSetupStep = observer(function ProfileSetupStep({ handleStepC
                     "border-danger-strong": errors.first_name,
                   }
                 )}
-                placeholder="Enter your full name"
+                placeholder="Введите имя и фамилию"
                 autoComplete="on"
               />
             )}

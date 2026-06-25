@@ -69,7 +69,7 @@ function ArchivedIssueDetailsPage({ params }: Route.ComponentProps) {
         <>
           <Banner
             variant="warning"
-            title="This work item has been archived. Visit the Archives section to restore it."
+            title="Этот рабочий элемент архивирован. Перейдите в раздел архивов, чтобы восстановить его."
             icon={<ArchiveIcon className="size-4" />}
             action={
               <Button

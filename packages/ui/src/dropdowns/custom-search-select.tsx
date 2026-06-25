@@ -40,7 +40,7 @@ export function CustomSearchSelect(props: ICustomSearchSelectProps) {
     optionsClassName = "",
     value,
     tabIndex,
-    noResultsMessage = "No matches found",
+    noResultsMessage = "Совпадений не найдено",
     defaultOpen = false,
   } = props;
   const [query, setQuery] = useState("");
@@ -74,7 +74,7 @@ export function CustomSearchSelect(props: ICustomSearchSelectProps) {
 
   const closeDropdown = () => {
     setIsOpen(false);
-    onClose && onClose();
+    onClose?.();
   };
 
   const handleKeyDown = useDropdownKeyDown(openDropdown, closeDropdown, isOpen);
@@ -89,6 +89,7 @@ export function CustomSearchSelect(props: ICustomSearchSelectProps) {
     <Combobox
       as="div"
       ref={dropdownRef}
+      role="presentation"
       tabIndex={tabIndex}
       className={cn("relative flex-shrink-0 text-left", className)}
       onKeyDown={handleKeyDown}
@@ -159,7 +160,7 @@ export function CustomSearchSelect(props: ICustomSearchSelectProps) {
                         className="w-full bg-transparent py-1 text-11 text-secondary placeholder:text-placeholder focus:outline-none"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        placeholder="Search"
+                        placeholder="Поиск"
                         displayValue={(assigned: any) => assigned?.name}
                       />
                     </div>
@@ -216,7 +217,7 @@ export function CustomSearchSelect(props: ICustomSearchSelectProps) {
                           <p className="px-1.5 py-1 text-placeholder italic">{noResultsMessage}</p>
                         )
                       ) : (
-                        <p className="px-1.5 py-1 text-placeholder italic">Loading...</p>
+                        <p className="px-1.5 py-1 text-placeholder italic">Загрузка...</p>
                       )}
                     </div>
                     {footerOption}

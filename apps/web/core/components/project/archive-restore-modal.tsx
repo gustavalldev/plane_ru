@@ -45,8 +45,8 @@ export function ArchiveRestoreProjectModal(props: Props) {
       .then(() => {
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Archive success",
-          message: `${projectDetails.name} has been archived successfully`,
+          title: "Проект архивирован",
+          message: `Проект ${projectDetails.name} успешно архивирован.`,
         });
         onClose();
         router.push(`/${workspaceSlug}/projects/`);
@@ -55,8 +55,8 @@ export function ArchiveRestoreProjectModal(props: Props) {
       .catch(() =>
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "Project could not be archived. Please try again.",
+          title: "Ошибка",
+          message: "Не удалось архивировать проект. Попробуйте еще раз.",
         })
       )
       .finally(() => setIsLoading(false));
@@ -68,8 +68,8 @@ export function ArchiveRestoreProjectModal(props: Props) {
       .then(() => {
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Restore success",
-          message: `You can find ${projectDetails.name} in your projects.`,
+          title: "Проект восстановлен",
+          message: `Проект ${projectDetails.name} снова доступен в проектах.`,
         });
         onClose();
         router.push(`/${workspaceSlug}/projects/`);
@@ -78,8 +78,8 @@ export function ArchiveRestoreProjectModal(props: Props) {
       .catch(() =>
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "Project could not be restored. Please try again.",
+          title: "Ошибка",
+          message: "Не удалось восстановить проект. Попробуйте еще раз.",
         })
       )
       .finally(() => setIsLoading(false));
@@ -89,16 +89,16 @@ export function ArchiveRestoreProjectModal(props: Props) {
     <ModalCore isOpen={isOpen} handleClose={handleClose} position={EModalPosition.CENTER} width={EModalWidth.LG}>
       <div className="px-5 py-4">
         <h3 className="text-18 font-medium 2xl:text-20">
-          {archive ? "Archive" : "Restore"} {projectDetails.name}
+          {archive ? "Архивировать" : "Восстановить"} {projectDetails.name}
         </h3>
         <p className="mt-3 text-13 text-secondary">
           {archive
-            ? "This project and its work items, cycles, modules, and pages will be archived. Its work items won't appear in search. Only project admins can restore the project."
-            : "Restoring a project will activate it and make it visible to all members of the project. Are you sure you want to continue?"}
+            ? "Проект, его рабочие элементы, циклы, модули и страницы будут архивированы. Рабочие элементы исчезнут из поиска. Восстановить проект смогут только администраторы."
+            : "Восстановление снова активирует проект и сделает его видимым для участников. Продолжить?"}
         </p>
         <div className="mt-3 flex justify-end gap-2">
           <Button variant="secondary" size="lg" onClick={onClose}>
-            Cancel
+            Отмена
           </Button>
           <Button
             variant="primary"
@@ -107,7 +107,7 @@ export function ArchiveRestoreProjectModal(props: Props) {
             onClick={archive ? handleArchiveProject : handleRestoreProject}
             loading={isLoading}
           >
-            {archive ? (isLoading ? "Archiving" : "Archive") : isLoading ? "Restoring" : "Restore"}
+            {archive ? (isLoading ? "Архивируем..." : "Архивировать") : isLoading ? "Восстанавливаем..." : "Восстановить"}
           </Button>
         </div>
       </div>

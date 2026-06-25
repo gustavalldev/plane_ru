@@ -128,7 +128,7 @@ export const SingleIntegrationCard = observer(function SingleIntegrationCard({ i
               ? isInstalled
                 ? integrationDetails[integration.provider].installed
                 : integrationDetails[integration.provider].notInstalled
-              : "Loading..."}
+              : "Загрузка..."}
           </p>
         </div>
       </div>

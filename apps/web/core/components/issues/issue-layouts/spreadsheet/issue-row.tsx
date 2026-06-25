@@ -312,9 +312,9 @@ const IssueRowDetails = observer(function IssueRowDetails(props: IssueRowDetails
                 <Tooltip
                   tooltipContent={
                     <>
-                      Only work items within the current
+                      Можно выбрать только задачи
                       <br />
-                      project can be selected.
+                      из текущего проекта.
                     </>
                   }
                   disabled={issueDetail.project_id === projectId}

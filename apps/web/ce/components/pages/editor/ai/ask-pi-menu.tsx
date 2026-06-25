@@ -94,7 +94,7 @@ export function AskPiMenu(props: Props) {
             </div>
           </div>
         ) : (
-          <p className="text-13 text-secondary">AI is answering...</p>
+          <p className="text-13 text-secondary">AI отвечает...</p>
         )}
       </div>
       <div className="px-4 py-3">

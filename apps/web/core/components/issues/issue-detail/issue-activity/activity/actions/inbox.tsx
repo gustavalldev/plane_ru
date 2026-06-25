@@ -26,15 +26,15 @@ export const IssueInboxActivity = observer(function IssueInboxActivity(props: TI
   const getInboxActivityMessage = () => {
     switch (activity?.verb) {
       case "-1":
-        return "declined this work item from intake.";
+        return "отклонил(а) эту задачу из входящих.";
       case "0":
-        return "snoozed this work item.";
+        return "отложил(а) эту задачу.";
       case "1":
-        return "accepted this work item from intake.";
+        return "принял(а) эту задачу из входящих.";
       case "2":
-        return "declined this work item from intake by marking a duplicate work item.";
+        return "отклонил(а) эту задачу из входящих, отметив её дубликатом.";
       default:
-        return "updated intake work item status.";
+        return "обновил(а) статус входящей задачи.";
     }
   };
 

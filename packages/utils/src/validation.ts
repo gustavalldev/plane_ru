@@ -65,15 +65,15 @@ export const SLUG_REGEX = /^[\p{L}\p{N}_-]+$/u;
  */
 export const validatePersonName = (name: string): boolean | string => {
   if (!name || name.trim() === "") {
-    return "Name is required";
+    return "Имя обязательно";
   }
 
   if (name.length > 50) {
-    return "Name must be 50 characters or less";
+    return "Имя должно быть короче 50 символов";
   }
 
   if (hasInjectionRiskChars(name)) {
-    return "Names cannot contain special characters like < > ' \" { } [ ] * ^ ! # %";
+    return "Имя не может содержать специальные символы вроде < > ' \" { } [ ] * ^ ! # %";
   }
 
   if (!PERSON_NAME_REGEX.test(name)) {

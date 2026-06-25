@@ -38,13 +38,13 @@ export const ArchivedModulesView = observer(function ArchivedModulesView(props: 
           <img
             src={archivedModulesSearchQuery.trim() === "" ? AllFiltersImage : NameFilterImage}
             className="mx-auto h-36 w-36 sm:h-48 sm:w-48"
-            alt="No matching modules"
+            alt="Подходящие модули не найдены"
           />
-          <h5 className="mt-7 mb-1 text-18 font-medium">No matching modules</h5>
+          <h5 className="mt-7 mb-1 text-18 font-medium">Подходящие модули не найдены</h5>
           <p className="text-14 text-placeholder">
             {archivedModulesSearchQuery.trim() === ""
-              ? "Remove the filters to see all modules"
-              : "Remove the search criteria to see all modules"}
+              ? "Уберите фильтры, чтобы увидеть все модули"
+              : "Уберите поисковый запрос, чтобы увидеть все модули"}
           </p>
         </div>
       </div>

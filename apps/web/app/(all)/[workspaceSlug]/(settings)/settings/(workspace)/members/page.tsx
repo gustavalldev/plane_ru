@@ -25,7 +25,6 @@ import { useMember } from "@/hooks/store/use-member";
 import { useWorkspace } from "@/hooks/store/use-workspace";
 import { useUserPermissions } from "@/hooks/store/user";
 // plane web components
-import { BillingActionsButton } from "@/plane-web/components/workspace/billing/billing-actions-button";
 import { SendWorkspaceInvitationModal, MembersActivityButton } from "@/plane-web/components/workspace/members";
 import { SettingsContentWrapper } from "@/components/settings/content-wrapper";
 // local imports
@@ -61,7 +60,7 @@ const WorkspaceMembersSettingsPage = observer(function WorkspaceMembersSettingsP
 
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Success!",
+        title: "Готово",
         message: t("workspace_settings.settings.members.invitations_sent_successfully"),
       });
     } catch (error: unknown) {
@@ -72,7 +71,7 @@ const WorkspaceMembersSettingsPage = observer(function WorkspaceMembersSettingsP
       }
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
+        title: "Ошибка",
         message: `${message ?? t("something_went_wrong_please_try_again")}`,
       });
 
@@ -92,7 +91,7 @@ const WorkspaceMembersSettingsPage = observer(function WorkspaceMembersSettingsP
   };
 
   // derived values
-  const pageTitle = currentWorkspace?.name ? `${currentWorkspace.name} - Members` : undefined;
+  const pageTitle = currentWorkspace?.name ? `${currentWorkspace.name} - Участники` : undefined;
   const appliedRoleFilters = filtersStore.filters?.roles || [];
 
   // if user is not authorized to view this page
@@ -144,7 +143,6 @@ const WorkspaceMembersSettingsPage = observer(function WorkspaceMembersSettingsP
                   {t("workspace_settings.settings.members.add_member")}
                 </Button>
               )}
-              <BillingActionsButton canPerformWorkspaceAdminActions={canPerformWorkspaceAdminActions} />
             </div>
           </div>
         </div>

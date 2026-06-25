@@ -72,7 +72,7 @@ function WebhookDetailsPage({ params }: Route.ComponentProps) {
       setToast({
         type: TOAST_TYPE.ERROR,
         title: "Error!",
-        message: error?.error ?? "Something went wrong. Please try again.",
+        message: error?.error ?? "Что-то пошло не так. Попробуйте еще раз.",
       });
     }
   };
@@ -82,7 +82,7 @@ function WebhookDetailsPage({ params }: Route.ComponentProps) {
       <>
         <PageHead title={pageTitle} />
         <div className="mt-10 flex h-full w-full justify-center p-4">
-          <p className="text-13 text-tertiary">You are not authorized to access this page.</p>
+          <p className="text-13 text-tertiary">У вас нет доступа к этой странице.</p>
         </div>
       </>
     );

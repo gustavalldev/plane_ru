@@ -176,7 +176,7 @@ export function ResizableSidebar({
 
   return (
     <>
-      {/* Main Sidebar */}
+      {/* Основная боковая панель */}
       <div
         id="main-sidebar"
         className={cn(
@@ -192,7 +192,7 @@ export function ResizableSidebar({
           maxWidth: `${isCollapsed ? 0 : width}px`,
         }}
         role="complementary"
-        aria-label="Main sidebar"
+        aria-label="Основная боковая панель"
         data-prevent-outside-click={isMobile}
       >
         <aside
@@ -203,7 +203,7 @@ export function ResizableSidebar({
         >
           {children}
 
-          {/* Resize Handle */}
+          {/* Ручка изменения ширины */}
           <div
             className={cn(
               "absolute z-[20] h-full w-1 cursor-ew-resize transition-all duration-200",
@@ -215,11 +215,11 @@ export function ResizableSidebar({
             onDoubleClick={() => toggleCollapsed()}
             onMouseDown={(e) => startResizing(e)}
             role="separator"
-            aria-label="Resize sidebar"
+            aria-label="Изменить ширину боковой панели"
           />
         </aside>
       </div>
-      {/* Peek View */}
+      {/* Предпросмотр боковой панели */}
       <div
         className={cn(
           "shadow-sm absolute left-0 z-20 h-full bg-surface-1",
@@ -235,7 +235,7 @@ export function ResizableSidebar({
         onMouseEnter={handlePeekEnter}
         onMouseLeave={handlePeekLeave}
         role="complementary"
-        aria-label="Sidebar peek view"
+        aria-label="Предпросмотр боковой панели"
       >
         <aside
           className={cn(
@@ -245,7 +245,7 @@ export function ResizableSidebar({
           )}
         >
           {children}
-          {/* Resize Handle */}
+          {/* Ручка изменения ширины */}
           <div
             className={cn(
               "absolute z-[20] h-full w-1 cursor-ew-resize transition-all duration-200",
@@ -257,7 +257,7 @@ export function ResizableSidebar({
             onDoubleClick={() => toggleCollapsed()}
             onMouseDown={(e) => startResizing(e)}
             role="separator"
-            aria-label="Resize sidebar"
+            aria-label="Изменить ширину боковой панели"
           />
         </aside>
       </div>

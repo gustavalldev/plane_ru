@@ -98,8 +98,8 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
       .then(() => {
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Success!",
-          message: "Profile picture deleted successfully.",
+          title: "Успешно",
+          message: "Фото профиля удалено.",
         });
         setValue("avatar_url", "");
         return;
@@ -107,8 +107,8 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
       .catch(() => {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "There was some error in deleting your profile picture. Please try again.",
+          title: "Ошибка",
+          message: "Не удалось удалить фото профиля. Попробуйте еще раз.",
         });
       })
       .finally(() => {
@@ -140,7 +140,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
       setToast({
         type: TOAST_TYPE.ERROR,
         title: t("toast.error"),
-        message: error instanceof Error ? error.message : "Failed to process cover image",
+        message: error instanceof Error ? error.message : "Не удалось обработать обложку",
       });
       setIsLoading(false);
       return;
@@ -163,27 +163,27 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
           | PromiseRejectedResult
           | undefined;
         if (rejectedResult) {
-          throw rejectedResult.reason ?? new Error("Failed to update profile");
+          throw rejectedResult.reason ?? new Error("Не удалось обновить профиль");
         }
         const values = results.map(
           (result) => (result as PromiseFulfilledResult<IUser | TUserProfile | undefined>).value
         );
         if (values.some((v) => v === undefined)) {
-          throw new Error("Failed to update profile");
+          throw new Error("Не удалось обновить профиль");
         }
         return values;
       })
       .finally(() => setIsLoading(false));
 
     setPromiseToast(updatePromise, {
-      loading: "Updating...",
+      loading: "Обновление...",
       success: {
-        title: "Success!",
-        message: () => `Profile updated successfully.`,
+        title: "Успешно",
+        message: () => `Профиль обновлен.`,
       },
       error: {
-        title: "Error!",
-        message: () => `There was some error in updating your profile. Please try again.`,
+        title: "Ошибка",
+        message: () => `Не удалось обновить профиль. Попробуйте еще раз.`,
       },
     });
   };
@@ -215,7 +215,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
             <CoverImage
               src={userCover}
               className="h-44 w-full rounded-lg"
-              alt={currentUser?.first_name ?? "Cover image"}
+              alt={currentUser?.first_name ?? "Обложка"}
             />
             <div className="absolute -bottom-6 left-6 flex items-end justify-between">
               <div className="flex gap-3">
@@ -275,7 +275,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                   control={control}
                   name="first_name"
                   rules={{
-                    required: "Please enter first name",
+                    required: "Введите имя",
                     validate: validatePersonName,
                   }}
                   render={({ field: { value, onChange, ref } }) => (
@@ -287,7 +287,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                       onChange={onChange}
                       ref={ref}
                       hasError={Boolean(errors.first_name)}
-                      placeholder="Enter your first name"
+                      placeholder="Введите имя"
                       className={`w-full rounded-md ${errors.first_name ? "border-danger-strong" : ""}`}
                       maxLength={50}
                       autoComplete="on"
@@ -313,7 +313,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                       onChange={onChange}
                       ref={ref}
                       hasError={Boolean(errors.last_name)}
-                      placeholder="Enter your last name"
+                      placeholder="Введите фамилию"
                       className="w-full rounded-md"
                       maxLength={50}
                       autoComplete="on"
@@ -331,7 +331,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                   control={control}
                   name="display_name"
                   rules={{
-                    required: "Display name is required.",
+                    required: "Отображаемое имя обязательно.",
                     validate: validateDisplayName,
                   }}
                   render={({ field: { value, onChange, ref } }) => (
@@ -343,7 +343,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                       onChange={onChange}
                       ref={ref}
                       hasError={Boolean(errors?.display_name)}
-                      placeholder="Enter your display name"
+                      placeholder="Введите отображаемое имя"
                       className={`w-full ${errors?.display_name ? "border-danger-strong" : ""}`}
                       maxLength={50}
                     />
@@ -362,7 +362,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                   control={control}
                   name="email"
                   rules={{
-                    required: "Email is required.",
+                    required: "Email обязателен.",
                   }}
                   render={({ field: { value, ref } }) => (
                     <Input
@@ -372,7 +372,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                       value={value}
                       ref={ref}
                       hasError={Boolean(errors.email)}
-                      placeholder="Enter your email"
+                      placeholder="Введите email"
                       className={`w-full cursor-not-allowed rounded-md !bg-surface-2 ${
                         errors.email ? "border-danger-strong" : ""
                       }`}

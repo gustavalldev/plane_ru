@@ -163,13 +163,13 @@ const PriorityChart = observer(function PriorityChart(props: Props) {
       },
       {
         accessorKey: "count",
-        header: () => <div className="text-right">Count</div>,
+        header: () => <div className="text-right">Количество</div>,
         cell: ({ row }) => <div className="text-right">{row.original.count}</div>,
         meta: {
           export: {
-            key: "Count",
+            key: "Количество",
             value: (row) => row.original.count,
-            label: "Count",
+            label: "Количество",
           },
         },
       },

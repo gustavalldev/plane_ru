@@ -55,7 +55,7 @@ export function AuthConfirmPasswordInput({
 
   const getError = () => {
     if (error) return error;
-    if (showMatchError) return "Passwords don't match";
+    if (showMatchError) return "Пароли не совпадают";
     return "";
   };
 
@@ -75,7 +75,7 @@ export function AuthConfirmPasswordInput({
         onBlur={handleBlur}
         autoComplete="off"
       />
-      {confirmPassword && passwordsMatch && <p className="text-13 text-success-primary">Passwords match</p>}
+      {confirmPassword && passwordsMatch && <p className="text-13 text-success-primary">Пароли совпадают</p>}
     </div>
   );
 }

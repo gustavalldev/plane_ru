@@ -45,7 +45,7 @@ export const ChangeWorkItemStateList = observer(function ChangeWorkItemStateList
             </Command.Item>
           ))
         ) : (
-          <div className="text-center">No states found</div>
+          <div className="text-center">Статусы не найдены</div>
         )
       ) : (
         <Spinner />

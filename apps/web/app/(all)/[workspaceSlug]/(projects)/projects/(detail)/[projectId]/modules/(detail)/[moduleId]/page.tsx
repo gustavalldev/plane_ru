@@ -53,7 +53,7 @@ function ModuleIssuesPage({ params }: Route.ComponentProps) {
       {error ? (
         <EmptyState
           image={emptyModule}
-          title="Module does not exist"
+          title="Модуль не найден"
           description="The module you are looking for does not exist or has been deleted."
           primaryButton={{
             text: "View other modules",

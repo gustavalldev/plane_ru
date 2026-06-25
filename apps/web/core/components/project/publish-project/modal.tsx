@@ -228,7 +228,7 @@ export const PublishProjectModal = observer(function PublishProjectModal(props: 
                       className="h-8 rounded-sm bg-layer-3 px-3 py-2 text-11 font-medium hover:bg-layer-3-hover"
                       onClick={handleCopyLink}
                     >
-                      Copy link
+                      Копировать ссылку
                     </button>
                   </div>
                 </div>

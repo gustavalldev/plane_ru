@@ -90,11 +90,11 @@ export const PageVersionsMainContent = observer(function PageVersionsMainContent
               <TriangleAlert className="size-10" />
             </span>
             <div>
-              <h6 className="text-16 font-semibold">Something went wrong!</h6>
-              <p className="text-13 text-tertiary">The version could not be loaded, please try again.</p>
+              <h6 className="text-16 font-semibold">Что-то пошло не так.</h6>
+              <p className="text-13 text-tertiary">Не удалось загрузить версию, попробуйте еще раз.</p>
             </div>
             <Button variant="link" onClick={handleRetry} loading={isRetrying}>
-              Try again
+              Повторить
             </Button>
           </div>
         </div>

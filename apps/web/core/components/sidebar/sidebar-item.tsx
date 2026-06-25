@@ -40,6 +40,7 @@ interface AppSidebarLinkItemProps {
   href?: string;
   children: React.ReactNode;
   className?: string;
+  ariaLabel?: string;
 }
 
 interface AppSidebarButtonItemProps {
@@ -47,6 +48,7 @@ interface AppSidebarButtonItemProps {
   onClick?: () => void;
   disabled?: boolean;
   className?: string;
+  ariaLabel?: string;
 }
 
 // ============================================================================
@@ -97,19 +99,19 @@ function AppSidebarItemIcon({ icon, highlight }: AppSidebarItemIconProps) {
   );
 }
 
-function AppSidebarLinkItem({ href, children, className }: AppSidebarLinkItemProps) {
+function AppSidebarLinkItem({ href, children, className, ariaLabel }: AppSidebarLinkItemProps) {
   if (!href) return null;
 
   return (
-    <Link href={href} className={cn(styles.base, className)}>
+    <Link href={href} className={cn(styles.base, className)} aria-label={ariaLabel}>
       {children}
     </Link>
   );
 }
 
-function AppSidebarButtonItem({ children, onClick, disabled = false, className }: AppSidebarButtonItemProps) {
+function AppSidebarButtonItem({ children, onClick, disabled = false, className, ariaLabel }: AppSidebarButtonItemProps) {
   return (
-    <button className={cn(styles.base, className)} onClick={onClick} disabled={disabled} type="button">
+    <button className={cn(styles.base, className)} onClick={onClick} disabled={disabled} type="button" aria-label={ariaLabel}>
       {children}
     </button>
   );
@@ -139,11 +141,15 @@ function AppSidebarItem({ variant = "link", item }: AppSidebarItemProps) {
   );
 
   if (variant === "link") {
-    return <AppSidebarLinkItem href={href}>{commonItems}</AppSidebarLinkItem>;
+    return (
+      <AppSidebarLinkItem href={href} ariaLabel={label}>
+        {commonItems}
+      </AppSidebarLinkItem>
+    );
   }
 
   return (
-    <AppSidebarButtonItem onClick={onClick} disabled={disabled}>
+    <AppSidebarButtonItem onClick={onClick} disabled={disabled} ariaLabel={label}>
       {commonItems}
     </AppSidebarButtonItem>
   );

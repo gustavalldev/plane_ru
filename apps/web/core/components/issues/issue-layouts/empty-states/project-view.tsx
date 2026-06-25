@@ -31,7 +31,7 @@ export const ProjectViewEmptyState = observer(function ProjectViewEmptyState() {
       description="Рабочие элементы помогают отслеживать отдельные части работы: что происходит, кто за это отвечает и что уже готово."
       actions={[
         {
-          label: "Новый рабочий элемент",
+          label: "Новая задача",
           onClick: () => {
             toggleCreateIssueModal(true, EIssuesStoreType.PROJECT_VIEW);
           },

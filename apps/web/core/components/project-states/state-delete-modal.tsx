@@ -47,15 +47,15 @@ export const StateDeleteModal = observer(function StateDeleteModal(props: TState
         if (err.status === 400)
           setToast({
             type: TOAST_TYPE.ERROR,
-            title: "Error!",
+            title: "Ошибка",
             message:
-              "This state contains some work items within it, please move them to some other state to delete this state.",
+              "В этом статусе есть рабочие элементы. Перенесите их в другой статус, чтобы удалить этот.",
           });
         else
           setToast({
             type: TOAST_TYPE.ERROR,
-            title: "Error!",
-            message: "State could not be deleted. Please try again.",
+            title: "Ошибка",
+            message: "Не удалось удалить статус. Попробуйте еще раз.",
           });
       })
       .finally(() => {
@@ -69,11 +69,11 @@ export const StateDeleteModal = observer(function StateDeleteModal(props: TState
       handleSubmit={handleDeletion}
       isSubmitting={isDeleteLoading}
       isOpen={isOpen}
-      title="Delete State"
+      title="Удалить статус"
       content={
         <>
-          Are you sure you want to delete state- <span className="font-medium text-primary">{data?.name}</span>? All of
-          the data related to the state will be permanently removed. This action cannot be undone.
+          Вы уверены, что хотите удалить статус <span className="font-medium text-primary">{data?.name}</span>? Все
+          данные, связанные со статусом, будут безвозвратно удалены. Это действие нельзя отменить.
         </>
       }
     />

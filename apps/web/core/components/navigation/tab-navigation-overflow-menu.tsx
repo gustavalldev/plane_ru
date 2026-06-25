@@ -28,7 +28,7 @@ type Props = {
 /**
  * Overflow menu for tab navigation items
  * Displays items that don't fit in the visible area, with action icons
- * Shows "Eye" icon for user-hidden items, "Set as default" icon for all items
+ * Показывает pin-действие для скрытых вкладок и действие выбора вкладки по умолчанию.
  */
 export function TabNavigationOverflowMenu({ overflowItems, isActive, tabPreferences, onToggleDefault, onShow }: Props) {
   const { t } = useTranslation();
@@ -67,12 +67,12 @@ export function TabNavigationOverflowMenu({ overflowItems, isActive, tabPreferen
                       onShow(item.key);
                     }}
                     className="invisible rounded-sm p-1 text-tertiary transition-colors group-hover/menu-item:visible hover:text-primary"
-                    title="Show"
+                    title="Показать"
                   >
                     <Pin className="size-3" />
                   </button>
                 )}
-                <Tooltip tooltipContent={isDefault ? "Clear default" : "Set as default"}>
+                <Tooltip tooltipContent={isDefault ? "Сбросить по умолчанию" : "Сделать по умолчанию"}>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -85,7 +85,7 @@ export function TabNavigationOverflowMenu({ overflowItems, isActive, tabPreferen
                         visible: isDefault,
                       }
                     )}
-                    title={isDefault ? "Clear default" : "Set as default"}
+                    title={isDefault ? "Сбросить по умолчанию" : "Сделать по умолчанию"}
                   >
                     <SetAsDefaultIcon className="size-3" />
                   </button>

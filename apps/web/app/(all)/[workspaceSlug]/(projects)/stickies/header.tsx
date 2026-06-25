@@ -52,7 +52,7 @@ export const WorkspaceStickyHeader = observer(function WorkspaceStickyHeader() {
             }}
             loading={creatingSticky}
           >
-            Add sticky
+            Добавить стикер
           </Button>
         </Header.RightItem>
       </Header>

@@ -47,15 +47,15 @@ export const StateDelete = observer(function StateDelete(props: TStateDelete) {
       if (errorStatus.status === 400) {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
+          title: "Ошибка",
           message:
-            "This state contains some work items within it, please move them to some other state to delete this state.",
+            "В этом статусе есть рабочие элементы. Перенесите их в другой статус, чтобы удалить этот.",
         });
       } else {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "State could not be deleted. Please try again.",
+          title: "Ошибка",
+          message: "Не удалось удалить статус. Попробуйте еще раз.",
         });
       }
       setIsDelete(false);
@@ -69,11 +69,11 @@ export const StateDelete = observer(function StateDelete(props: TStateDelete) {
         handleSubmit={handleDeleteState}
         isSubmitting={isDelete}
         isOpen={isDeleteModal}
-        title="Delete State"
+        title="Удалить статус"
         content={
           <>
-            Are you sure you want to delete state- <span className="font-medium text-primary">{state?.name}</span>? All
-            of the data related to the state will be permanently removed. This action cannot be undone.
+            Вы уверены, что хотите удалить статус <span className="font-medium text-primary">{state?.name}</span>? Все
+            связанные данные будут удалены навсегда. Это действие нельзя отменить.
           </>
         }
       />
@@ -89,7 +89,11 @@ export const StateDelete = observer(function StateDelete(props: TStateDelete) {
       >
         <Tooltip
           tooltipContent={
-            state.default ? "Cannot delete the default state." : totalStates === 1 ? `Cannot have an empty group.` : ``
+            state.default
+              ? "Нельзя удалить статус по умолчанию."
+              : totalStates === 1
+                ? `Нельзя оставить группу пустой.`
+                : ``
           }
           isMobile={isMobile}
           disabled={!isDeleteDisabled}

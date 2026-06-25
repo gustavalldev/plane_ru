@@ -87,7 +87,7 @@ export const ViewFiltersSelection = observer(function ViewFiltersSelection(props
                 favorites: !filters.filters?.favorites,
               })
             }
-            title="Favorites"
+            title="Избранное"
           />
         </div>
 
@@ -97,8 +97,8 @@ export const ViewFiltersSelection = observer(function ViewFiltersSelection(props
           handleUpdate={(val: string | string[]) => handleFilters("view_type", val)}
           searchQuery={filtersSearchQuery}
           accessFilters={[
-            { key: EViewAccess.PRIVATE, value: "Private" },
-            { key: EViewAccess.PUBLIC, value: "Public" },
+            { key: EViewAccess.PRIVATE, value: "Личное" },
+            { key: EViewAccess.PUBLIC, value: "Публичное" },
           ]}
         />
 

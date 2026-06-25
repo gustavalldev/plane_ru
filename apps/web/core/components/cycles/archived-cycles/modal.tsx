@@ -44,8 +44,8 @@ export function ArchiveCycleModal(props: Props) {
       .then(() => {
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Archive success",
-          message: "Your archives can be found in project archives.",
+          title: "Цикл архивирован",
+          message: "Архивные циклы доступны в архиве проекта.",
         });
         onClose();
         router.push(`/${workspaceSlug}/projects/${projectId}/cycles`);
@@ -54,8 +54,8 @@ export function ArchiveCycleModal(props: Props) {
       .catch(() => {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "Cycle could not be archived. Please try again.",
+          title: "Ошибка",
+          message: "Не удалось архивировать цикл. Попробуйте еще раз.",
         });
       })
       .finally(() => setIsArchiving(false));
@@ -64,16 +64,16 @@ export function ArchiveCycleModal(props: Props) {
   return (
     <ModalCore isOpen={isOpen} handleClose={onClose} position={EModalPosition.CENTER} width={EModalWidth.LG}>
       <div className="px-5 py-4">
-        <h3 className="text-18 font-medium 2xl:text-20">Archive cycle {cycleName}</h3>
+        <h3 className="text-18 font-medium 2xl:text-20">Архивировать цикл {cycleName}</h3>
         <p className="mt-3 text-13 text-secondary">
-          Are you sure you want to archive the cycle? All your archives can be restored later.
+          Вы уверены, что хотите архивировать цикл? Архивированные циклы можно восстановить позже.
         </p>
         <div className="mt-3 flex justify-end gap-2">
           <Button variant="secondary" size="lg" onClick={onClose}>
-            Cancel
+            Отмена
           </Button>
           <Button variant="primary" size="lg" tabIndex={1} onClick={handleArchiveCycle} loading={isArchiving}>
-            {isArchiving ? "Archiving" : "Archive"}
+            {isArchiving ? "Архивируем..." : "Архивировать"}
           </Button>
         </div>
       </div>

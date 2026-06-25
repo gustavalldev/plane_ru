@@ -17,7 +17,7 @@ type TProjectHeaderButtonProps = {
 export function ProjectHeaderButton({ project }: TProjectHeaderButtonProps) {
   return (
     <Tooltip tooltipContent={project.name} position="bottom">
-      <div className="relative flex w-full max-w-48 items-center pr-1 text-left select-none">
+      <div className="relative flex w-full max-w-[22rem] items-center pr-1 text-left select-none">
         <div className="flex size-7 flex-shrink-0 items-center justify-center rounded-md bg-layer-1">
           <Logo logo={project.logo_props} size={16} />
         </div>

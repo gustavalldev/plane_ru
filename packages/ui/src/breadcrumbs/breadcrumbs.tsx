@@ -71,7 +71,7 @@ function Breadcrumbs({ className, children, onBack, isLoading = false }: Breadcr
               <button
                 type="button"
                 onClick={onBack}
-                aria-label="Back"
+                aria-label="Назад"
                 className="flex size-6 items-center justify-center rounded-sm text-secondary hover:bg-layer-transparent-hover"
               >
                 <ChevronRightIcon
@@ -139,7 +139,7 @@ function BreadcrumbLabel(props: BreadcrumbLabelProps) {
   return (
     <div
       className={cn(
-        "relative line-clamp-1 block max-w-[150px] truncate overflow-hidden sm:max-w-[220px] md:max-w-[320px] lg:max-w-[420px] xl:max-w-[560px]",
+        "relative line-clamp-1 block max-w-[180px] truncate overflow-hidden sm:max-w-[260px] md:max-w-[440px] lg:max-w-[640px] xl:max-w-[820px]",
         className
       )}
     >

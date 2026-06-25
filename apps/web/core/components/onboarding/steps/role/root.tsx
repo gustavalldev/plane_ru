@@ -89,15 +89,15 @@ export const RoleSetupStep = observer(function RoleSetupStep({ handleStepChange 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-10">
       {/* Header */}
-      <CommonOnboardingHeader title="What's your role?" description="Let's set up Plane for how you work." />
+      <CommonOnboardingHeader title="Какая у вас роль?" description="Настроим LeadUp под ваш формат работы." />
       {/* Role Selection */}
       <div className="flex flex-col gap-3">
-        <p className="text-body-sm-semibold text-placeholder">Select one</p>
+        <p className="text-body-sm-semibold text-placeholder">Выберите один вариант</p>
         <Controller
           control={control}
           name="role"
           rules={{
-            required: "This field is required",
+            required: "Это поле обязательно",
           }}
           render={({ field: { value, onChange } }) => (
             <div className="flex flex-col gap-3">

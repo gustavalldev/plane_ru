@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useReducer, useRef } from "react";
 import { ChevronDown, ChevronUp, Loader2, Mic, Pause, Play } from "lucide-react";
 // plane imports
 import type { TCommentsOperations, TIssueComment } from "@plane/types";
@@ -67,18 +67,26 @@ const voiceMessageBubbleReducer = (
 export const VoiceMessageBubble = (props: TVoiceMessageBubbleProps) => {
   const { activityOperations, attachment, comment, entityId, projectId, workspaceSlug } = props;
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const autoTranscriptionAttemptedRef = useRef(false);
   const [state, setState] = useReducer(voiceMessageBubbleReducer, {
     isPlaying: false,
     duration: attachment.duration,
     transcript: attachment.transcript,
-    isTranscriptOpen: false,
+    isTranscriptOpen: !!attachment.transcript,
     isTranscribing: false,
     transcriptionError: undefined,
   });
 
   useEffect(() => {
-    setState({ transcript: attachment.transcript });
+    setState({
+      transcript: attachment.transcript,
+      isTranscriptOpen: !!attachment.transcript,
+    });
   }, [attachment.transcript]);
+
+  useEffect(() => {
+    autoTranscriptionAttemptedRef.current = false;
+  }, [attachment.url]);
 
   const togglePlayback = async () => {
     const audio = audioRef.current;
@@ -98,11 +106,8 @@ export const VoiceMessageBubble = (props: TVoiceMessageBubbleProps) => {
     }
   };
 
-  const handleTranscriptToggle = async () => {
-    if (state.transcript) {
-      setState({ isTranscriptOpen: !state.isTranscriptOpen });
-      return;
-    }
+  const runTranscription = useCallback(async () => {
+    if (state.transcript || state.isTranscribing) return;
 
     if (!projectId) {
       setState({ transcriptionError: "Расшифровка доступна только в задаче проекта." });
@@ -142,6 +147,32 @@ export const VoiceMessageBubble = (props: TVoiceMessageBubbleProps) => {
     } finally {
       setState({ isTranscribing: false });
     }
+  }, [
+    activityOperations,
+    attachment,
+    comment.comment_html,
+    comment.id,
+    entityId,
+    projectId,
+    state.isTranscribing,
+    state.transcript,
+    workspaceSlug,
+  ]);
+
+  useEffect(() => {
+    if (autoTranscriptionAttemptedRef.current || state.transcript || state.isTranscribing) return;
+
+    autoTranscriptionAttemptedRef.current = true;
+    void runTranscription();
+  }, [runTranscription, state.isTranscribing, state.transcript]);
+
+  const handleTranscriptToggle = async () => {
+    if (state.transcript) {
+      setState({ isTranscriptOpen: !state.isTranscriptOpen });
+      return;
+    }
+
+    await runTranscription();
   };
 
   return (
@@ -184,29 +215,31 @@ export const VoiceMessageBubble = (props: TVoiceMessageBubbleProps) => {
         </audio>
       </div>
       <div className="flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          onClick={handleTranscriptToggle}
-          disabled={state.isTranscribing}
-          className="inline-flex items-center gap-1 rounded border border-subtle px-2 py-1 text-caption-sm-medium text-secondary hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {state.isTranscribing ? (
-            <>
-              <Loader2 className="size-3.5 animate-spin" />
-              <span>Распознаём...</span>
-            </>
-          ) : state.transcript ? (
-            <>
-              {state.isTranscriptOpen ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
-              <span>{state.isTranscriptOpen ? "Скрыть расшифровку" : "Показать расшифровку"}</span>
-            </>
-          ) : (
-            <>
-              <ChevronDown className="size-3.5" />
-              <span>Расшифровать</span>
-            </>
-          )}
-        </button>
+        {(state.isTranscribing || state.transcript || state.transcriptionError) && (
+          <button
+            type="button"
+            onClick={handleTranscriptToggle}
+            disabled={state.isTranscribing}
+            className="inline-flex items-center gap-1 rounded border border-subtle px-2 py-1 text-caption-sm-medium text-secondary hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {state.isTranscribing ? (
+              <>
+                <Loader2 className="size-3.5 animate-spin" />
+                <span>Распознаём...</span>
+              </>
+            ) : state.transcript ? (
+              <>
+                {state.isTranscriptOpen ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
+                <span>{state.isTranscriptOpen ? "Скрыть расшифровку" : "Показать расшифровку"}</span>
+              </>
+            ) : (
+              <>
+                <ChevronDown className="size-3.5" />
+                <span>Повторить распознавание</span>
+              </>
+            )}
+          </button>
+        )}
         {state.transcriptionError && (
           <span className="text-red-600 text-caption-sm-regular">{state.transcriptionError}</span>
         )}

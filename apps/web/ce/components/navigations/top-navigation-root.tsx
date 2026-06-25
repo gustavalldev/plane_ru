@@ -61,14 +61,16 @@ export const TopNavigationRoot = observer(function TopNavigationRoot() {
       </div>
       {/* Additional Actions */}
       <div className="flex flex-shrink-0 items-center justify-end gap-1">
-        <Tooltip tooltipContent="Inbox" position="bottom">
+        <Tooltip tooltipContent="Уведомления" position="bottom">
           <AppSidebarItem
             variant="link"
             item={{
               href: `/${workspaceSlug?.toString()}/notifications/`,
+              label: "Уведомления",
+              showLabel: false,
               icon: (
                 <div className="relative">
-                  <InboxIcon className="size-5" />
+                  <InboxIcon className="size-5" aria-hidden="true" focusable="false" />
                   {totalNotifications > 0 && (
                     <span className="absolute top-0 right-0 size-2 rounded-full bg-danger-primary" />
                   )}

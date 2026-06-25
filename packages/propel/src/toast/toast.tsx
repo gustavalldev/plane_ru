@@ -56,10 +56,28 @@ export type ToastProps = {
 const toastManager = BaseToast.createToastManager();
 
 export function Toast(props: ToastProps) {
+  const viewportRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const localizeToastViewport = () => {
+      viewportRef.current?.setAttribute("aria-label", "Уведомления");
+      document
+        .querySelectorAll<HTMLElement>('[role="region"][aria-live="polite"][aria-label="Notifications"]')
+        .forEach((element) => element.setAttribute("aria-label", "Уведомления"));
+    };
+
+    localizeToastViewport();
+
+    const observer = new MutationObserver(localizeToastViewport);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <BaseToast.Provider toastManager={toastManager}>
       <BaseToast.Portal>
-        <BaseToast.Viewport data-theme={props.theme}>
+        <BaseToast.Viewport ref={viewportRef} data-theme={props.theme} aria-label="Уведомления">
           <ToastList />
         </BaseToast.Viewport>
       </BaseToast.Portal>
@@ -110,6 +128,16 @@ function ToastList() {
   const { toasts } = BaseToast.useToastManager();
   return toasts.map((toast) => <ToastRender key={toast.id} id={toast.id} toast={toast} />);
 }
+
+const normalizeToastTitle = (title: string) => {
+  const normalizedTitle = title.trim().toLowerCase();
+
+  if (normalizedTitle === "success!" || normalizedTitle === "success") return "Готово";
+  if (normalizedTitle === "error!" || normalizedTitle === "error") return "Ошибка";
+  if (normalizedTitle === "warning!" || normalizedTitle === "warning") return "Внимание";
+
+  return title;
+};
 
 function ToastRender({ id, toast }: { id: React.Key; toast: BaseToast.Root.ToastObject }) {
   const toastData = toast.data as SetToastProps;
@@ -178,7 +206,9 @@ function ToastRender({ id, toast }: { id: React.Key; toast: BaseToast.Root.Toast
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <BaseToast.Title className="text-h6-medium text-primary">
-            {toastData.type === TOAST_TYPE.LOADING ? (toastData.title ?? "Loading...") : toastData.title}
+            {toastData.type === TOAST_TYPE.LOADING
+              ? (toastData.title ?? "Загрузка...")
+              : normalizeToastTitle(toastData.title)}
           </BaseToast.Title>
           {toastData.type !== TOAST_TYPE.LOADING && toastData.message && (
             <BaseToast.Description className="text-body-xs-regular text-tertiary">

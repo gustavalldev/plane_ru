@@ -140,7 +140,7 @@ export const ArchivedModulesHeader = observer(function ArchivedModulesHeader() {
         />
         <FiltersDropdown
           icon={<ListFilter className="h-3 w-3" />}
-          title="Filters"
+          title="Фильтры"
           placement="bottom-end"
           isFiltersApplied={isFiltersApplied}
         >
