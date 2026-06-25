@@ -275,17 +275,21 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
               )}
             </div>
 
-            <Tooltip
-              tooltipContent={issue.name}
-              isMobile={isMobile}
-              position="top-start"
-              disabled={isCurrentBlockDragging}
-              renderByDefault={false}
-            >
-              <p className="line-clamp-2 min-w-0 cursor-pointer text-body-xs-medium break-words text-primary md:line-clamp-1 md:truncate">
-                {issue.name}
-              </p>
-            </Tooltip>
+            {isMobile ? (
+              <p className="min-w-0 cursor-pointer text-body-xs-medium break-words text-primary">{issue.name}</p>
+            ) : (
+              <Tooltip
+                tooltipContent={issue.name}
+                isMobile={isMobile}
+                position="top-start"
+                disabled={isCurrentBlockDragging}
+                renderByDefault={false}
+              >
+                <p className="min-w-0 cursor-pointer text-body-xs-medium break-words text-primary md:line-clamp-1 md:truncate">
+                  {issue.name}
+                </p>
+              </Tooltip>
+            )}
             {isEpic && displayProperties && (
               <WithDisplayPropertiesHOC
                 displayProperties={displayProperties}
