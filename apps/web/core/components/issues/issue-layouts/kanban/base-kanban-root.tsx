@@ -12,8 +12,7 @@ import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-sc
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 import { EIssueFilterType, EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
-import type { EIssuesStoreType } from "@plane/types";
-import { EIssueServiceType, EIssueLayoutTypes } from "@plane/types";
+import { EIssueServiceType, EIssueLayoutTypes, EIssuesStoreType } from "@plane/types";
 //hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { useIssues } from "@/hooks/store/use-issues";
@@ -28,6 +27,7 @@ import { useIssuesActions } from "@/hooks/use-issues-actions";
 import { DeleteIssueModal } from "../../delete-issue-modal";
 import { IssueLayoutHOC } from "../issue-layout-HOC";
 import type { IQuickActionProps, TRenderQuickActions } from "../list/list-view-types";
+import { filterModuleGroupedIssueIds } from "../module-issue-visibility";
 //components
 import { getSourceFromDropPayload } from "../utils";
 import { KanBan } from "./default";
@@ -109,6 +109,10 @@ export const BaseKanBanRoot = observer(function BaseKanBanRoot(props: IBaseKanBa
   );
 
   const groupedIssueIds = issues?.groupedIssueIds;
+  const visibleGroupedIssueIds =
+    storeType === EIssuesStoreType.MODULE && groupedIssueIds
+      ? filterModuleGroupedIssueIds(groupedIssueIds, issueMap)
+      : groupedIssueIds;
 
   const userDisplayFilters = displayFilters || null;
 
@@ -274,7 +278,7 @@ export const BaseKanBanRoot = observer(function BaseKanBanRoot(props: IBaseKanBa
             <div className="h-full w-full md:w-max">
               <KanBanView
                 issuesMap={issueMap}
-                groupedIssueIds={groupedIssueIds ?? {}}
+                groupedIssueIds={visibleGroupedIssueIds ?? {}}
                 getGroupIssueCount={issues.getGroupIssueCount}
                 displayProperties={displayProperties}
                 sub_group_by={sub_group_by}

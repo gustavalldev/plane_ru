@@ -21,6 +21,7 @@ import { useIssueStoreType } from "@/hooks/use-issue-layout-store";
 import { useIssuesActions } from "@/hooks/use-issues-actions";
 // types
 import type { IQuickActionProps } from "../list/list-view-types";
+import { filterModuleGroupedIssueIds } from "../module-issue-visibility";
 import { CalendarChart } from "./calendar";
 import { handleDragDrop } from "./utils";
 
@@ -84,6 +85,8 @@ export const BaseCalendarRoot = observer(function BaseCalendarRoot(props: IBaseC
   const displayFilters = issuesFilter.issueFilters?.displayFilters;
 
   const groupedIssueIds = (issues.groupedIssueIds ?? {}) as TGroupedIssues;
+  const visibleGroupedIssueIds =
+    storeType === EIssuesStoreType.MODULE ? filterModuleGroupedIssueIds(groupedIssueIds, issueMap) : groupedIssueIds;
 
   const layout = displayFilters?.calendar?.layout ?? "month";
   const { startDate, endDate } = issueCalendarView.getStartAndEndDate(layout) ?? {};
@@ -137,12 +140,12 @@ export const BaseCalendarRoot = observer(function BaseCalendarRoot(props: IBaseC
 
   const getPaginationData = useCallback(
     (groupId: string | undefined) => issues?.getPaginationData(groupId, undefined),
-    [issues?.getPaginationData]
+    [issues]
   );
 
   const getGroupIssueCount = useCallback(
     (groupId: string | undefined) => issues?.getGroupIssueCount(groupId, undefined, false),
-    [issues?.getGroupIssueCount]
+    [issues]
   );
 
   const canEditProperties = useCallback(
@@ -161,7 +164,7 @@ export const BaseCalendarRoot = observer(function BaseCalendarRoot(props: IBaseC
         <CalendarChart
           issuesFilterStore={issuesFilter}
           issues={issueMap}
-          groupedIssueIds={groupedIssueIds}
+          groupedIssueIds={visibleGroupedIssueIds}
           layout={displayFilters?.calendar?.layout}
           showWeekends={displayFilters?.calendar?.show_weekends ?? false}
           issueCalendarView={issueCalendarView}

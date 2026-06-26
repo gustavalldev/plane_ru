@@ -7,6 +7,7 @@
 import React, { useState } from "react";
 import { xor } from "lodash-es";
 import { observer } from "mobx-react";
+import { useParams } from "next/navigation";
 import { useTranslation } from "@plane/i18n";
 // hooks
 // components
@@ -32,24 +33,52 @@ export const IssueModuleSelect = observer(function IssueModuleSelect(props: TIss
   const { t } = useTranslation();
   // states
   const [isUpdating, setIsUpdating] = useState(false);
+  const { moduleId: currentModuleId } = useParams();
   // store hooks
   const {
     issue: { getIssueById },
   } = useIssueDetail();
   // derived values
   const issue = getIssueById(issueId);
+  const directModuleIds = issue?.module_ids ?? [];
+  const currentModuleIdString = currentModuleId?.toString();
+  const inheritedModuleIds = (() => {
+    if (!issue || directModuleIds.length > 0 || !currentModuleIdString) return [];
+
+    const visitedIssueIds = new Set<string>();
+    let parentId = issue.parent_id ?? issue.parent?.id;
+
+    while (parentId) {
+      if (visitedIssueIds.has(parentId)) return [];
+
+      visitedIssueIds.add(parentId);
+      const parentIssue = getIssueById(parentId);
+      const parentModuleIds =
+        parentIssue?.module_ids ?? (issue.parent?.id === parentId ? issue.parent.module_ids : null);
+
+      if (parentModuleIds?.includes(currentModuleIdString)) return [currentModuleIdString];
+
+      parentId = parentIssue?.parent_id ?? parentIssue?.parent?.id;
+    }
+
+    return [];
+  })();
+  const displayedModuleIds = directModuleIds.length > 0 ? directModuleIds : inheritedModuleIds;
   const disableSelect = disabled || isUpdating;
 
   const handleIssueModuleChange = async (moduleIds: string[]) => {
-    if (!issue || !issue.module_ids) return;
+    if (!issue) return;
 
     setIsUpdating(true);
-    const updatedModuleIds = xor(issue.module_ids, moduleIds);
+    const selectedModuleIds = moduleIds.filter(
+      (moduleId) => directModuleIds.includes(moduleId) || !inheritedModuleIds.includes(moduleId)
+    );
+    const updatedModuleIds = xor(directModuleIds, selectedModuleIds);
     const modulesToAdd: string[] = [];
     const modulesToRemove: string[] = [];
 
     for (const moduleId of updatedModuleIds) {
-      if (issue.module_ids.includes(moduleId)) {
+      if (directModuleIds.includes(moduleId)) {
         modulesToRemove.push(moduleId);
       } else {
         modulesToAdd.push(moduleId);
@@ -65,13 +94,13 @@ export const IssueModuleSelect = observer(function IssueModuleSelect(props: TIss
     <div className={cn(`flex h-full items-center gap-1`, className)}>
       <ModuleDropdown
         projectId={projectId}
-        value={issue?.module_ids ?? []}
+        value={displayedModuleIds}
         onChange={handleIssueModuleChange}
         placeholder={t("module.no_module")}
         disabled={disableSelect}
         className="group h-full w-full"
         buttonContainerClassName="w-full text-left rounded-sm"
-        buttonClassName={`text-body-xs-medium justify-between ${issue?.module_ids?.length ? "" : "text-placeholder"}`}
+        buttonClassName={`text-body-xs-medium justify-between ${displayedModuleIds.length ? "" : "text-placeholder"}`}
         buttonVariant="transparent-with-text"
         hideIcon
         dropdownArrow
