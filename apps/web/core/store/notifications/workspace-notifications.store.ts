@@ -141,9 +141,9 @@ export class WorkspaceNotificationStore implements IWorkspaceNotificationStore {
           }
         } else {
           if (this.filters.snoozed) {
-            return !!n.snoozed_till;
+            return n.snoozed_till ? true : false;
           } else if (this.filters.archived) {
-            return !!n.archived_at;
+            return n.archived_at ? true : false;
           } else {
             return true;
           }
@@ -167,7 +167,7 @@ export class WorkspaceNotificationStore implements IWorkspaceNotificationStore {
       workspace_slug: workspaceSlug,
       project_id: notification.project,
       notification_id: notification.id,
-      issue_id: notification.data?.issue?.id || notification.entity_identifier,
+      issue_id: notification.data?.issue?.id,
       is_inbox_issue: notification.is_inbox_issue || false,
     };
   });

@@ -37,7 +37,7 @@ export const NotificationItem = observer(function NotificationItem(props: TNotif
 
   // derived values
   const projectId = notification?.project || undefined;
-  const issueId = notification?.data?.issue?.id || notification?.entity_identifier || undefined;
+  const issueId = notification?.data?.issue?.id || undefined;
   const workspace = getWorkspaceBySlug(workspaceSlug);
 
   const notificationField = notification?.data?.issue_activity.field || undefined;
@@ -48,16 +48,18 @@ export const NotificationItem = observer(function NotificationItem(props: TNotif
       setPeekIssue(undefined);
       setCurrentSelectedNotificationId(notificationId);
 
-      if (notification?.is_inbox_issue !== true && !getIsIssuePeeked(issueId)) {
-        setPeekIssue({ workspaceSlug, projectId, issueId });
-      }
-
       // make the notification as read
       if (notification.read_at === null) {
         try {
           await markNotificationAsRead(workspaceSlug);
         } catch (error) {
           console.error(error);
+        }
+      }
+
+      if (notification?.is_inbox_issue === false) {
+        if (!getIsIssuePeeked(issueId)) {
+          setPeekIssue({ workspaceSlug, projectId, issueId });
         }
       }
     }
