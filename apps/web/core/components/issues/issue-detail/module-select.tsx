@@ -7,7 +7,6 @@
 import React, { useState } from "react";
 import { xor } from "lodash-es";
 import { observer } from "mobx-react";
-import { useParams } from "next/navigation";
 import { useTranslation } from "@plane/i18n";
 // hooks
 // components
@@ -33,7 +32,6 @@ export const IssueModuleSelect = observer(function IssueModuleSelect(props: TIss
   const { t } = useTranslation();
   // states
   const [isUpdating, setIsUpdating] = useState(false);
-  const { moduleId: currentModuleId } = useParams();
   // store hooks
   const {
     issue: { getIssueById },
@@ -41,9 +39,8 @@ export const IssueModuleSelect = observer(function IssueModuleSelect(props: TIss
   // derived values
   const issue = getIssueById(issueId);
   const directModuleIds = issue?.module_ids ?? [];
-  const currentModuleIdString = currentModuleId?.toString();
   const inheritedModuleIds = (() => {
-    if (!issue || directModuleIds.length > 0 || !currentModuleIdString) return [];
+    if (!issue || directModuleIds.length > 0) return [];
 
     const visitedIssueIds = new Set<string>();
     let parentId = issue.parent_id ?? issue.parent?.id;
@@ -56,7 +53,7 @@ export const IssueModuleSelect = observer(function IssueModuleSelect(props: TIss
       const parentModuleIds =
         parentIssue?.module_ids ?? (issue.parent?.id === parentId ? issue.parent.module_ids : null);
 
-      if (parentModuleIds?.includes(currentModuleIdString)) return [currentModuleIdString];
+      if (parentModuleIds?.length) return parentModuleIds;
 
       parentId = parentIssue?.parent_id ?? parentIssue?.parent?.id;
     }
