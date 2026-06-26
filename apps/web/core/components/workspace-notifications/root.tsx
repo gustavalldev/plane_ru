@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { observer } from "mobx-react";
 import useSWR from "swr";
 // plane imports
@@ -28,6 +28,7 @@ type NotificationsRootProps = {
 };
 
 export const NotificationsRoot = observer(function NotificationsRoot({ workspaceSlug }: NotificationsRootProps) {
+  const hasAutoSelectedNotification = useRef(false);
   // hooks
   const { currentWorkspace } = useWorkspace();
   const {
@@ -40,6 +41,7 @@ export const NotificationsRoot = observer(function NotificationsRoot({ workspace
   const { fetchUserProjectInfo } = useUserPermissions();
   const { isWorkItem, PeekOverviewComponent, setPeekWorkItem } = useNotificationPreview();
   // derived values
+  const notificationIds = currentWorkspace ? notificationIdsByWorkspaceId(currentWorkspace.id) : undefined;
   const { workspace_slug, project_id, issue_id, is_inbox_issue } =
     notificationLiteByNotificationId(currentSelectedNotificationId);
 
@@ -48,13 +50,9 @@ export const NotificationsRoot = observer(function NotificationsRoot({ workspace
 
   // fetch workspace notifications
   const notificationMutation =
-    currentWorkspace && notificationIdsByWorkspaceId(currentWorkspace.id)
-      ? ENotificationLoader.MUTATION_LOADER
-      : ENotificationLoader.INIT_LOADER;
+    currentWorkspace && notificationIds ? ENotificationLoader.MUTATION_LOADER : ENotificationLoader.INIT_LOADER;
   const notificationLoader =
-    currentWorkspace && notificationIdsByWorkspaceId(currentWorkspace.id)
-      ? ENotificationQueryParamType.CURRENT
-      : ENotificationQueryParamType.INIT;
+    currentWorkspace && notificationIds ? ENotificationQueryParamType.CURRENT : ENotificationQueryParamType.INIT;
   useSWR(
     currentWorkspace?.slug ? `WORKSPACE_NOTIFICATION_${currentWorkspace?.slug}` : null,
     currentWorkspace?.slug
@@ -74,6 +72,42 @@ export const NotificationsRoot = observer(function NotificationsRoot({ workspace
     () => setCurrentSelectedNotificationId(undefined),
     [setCurrentSelectedNotificationId]
   );
+
+  useEffect(() => {
+    if (!notificationIds) return;
+
+    if (notificationIds.length === 0) {
+      hasAutoSelectedNotification.current = false;
+      setCurrentSelectedNotificationId(undefined);
+      setPeekWorkItem(undefined);
+      return;
+    }
+
+    if (currentSelectedNotificationId && notificationIds.includes(currentSelectedNotificationId)) return;
+
+    if (currentSelectedNotificationId && !notificationIds.includes(currentSelectedNotificationId)) {
+      hasAutoSelectedNotification.current = true;
+      setCurrentSelectedNotificationId(notificationIds[0]);
+      return;
+    }
+
+    const isDesktopViewport = typeof window === "undefined" ? true : window.matchMedia("(min-width: 768px)").matches;
+    if (!hasAutoSelectedNotification.current && isDesktopViewport) {
+      hasAutoSelectedNotification.current = true;
+      setCurrentSelectedNotificationId(notificationIds[0]);
+    }
+  }, [currentSelectedNotificationId, notificationIds, setCurrentSelectedNotificationId, setPeekWorkItem]);
+
+  useEffect(() => {
+    if (!currentSelectedNotificationId || is_inbox_issue === true) {
+      setPeekWorkItem(undefined);
+      return;
+    }
+
+    if (workspace_slug && project_id && issue_id) {
+      setPeekWorkItem({ workspaceSlug: workspace_slug, projectId: project_id, issueId: issue_id });
+    }
+  }, [currentSelectedNotificationId, is_inbox_issue, issue_id, project_id, setPeekWorkItem, workspace_slug]);
 
   // clearing up the selected notifications when unmounting the page
   useEffect(
