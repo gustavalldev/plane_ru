@@ -42,7 +42,7 @@ export const meta = () => [
     property: "og:description",
     content: SITE_DESCRIPTION,
   },
-  { property: "og:url", content: "https://disp.ordbox.ru/" },
+  { property: "og:url", content: "https://disp.plane.ordbox.ru/" },
   { property: "og:image", content: "https://app.plane.so/og-image.png" },
   { property: "og:image:width", content: "1200" },
   { property: "og:image:height", content: "630" },

@@ -4,7 +4,7 @@ This folder contains the company deployment layer for Plane on `disp-prod`.
 
 ## Target
 
-- Domain: `disp.ordbox.ru`
+- Domain: `disp.plane.ordbox.ru`
 - Server: `45.87.246.135`
 - Server path: `/opt/disp/deploy/plane_ru`
 - Plane release: `v1.3.1`
@@ -13,13 +13,13 @@ This folder contains the company deployment layer for Plane on `disp-prod`.
 DNS must contain:
 
 ```text
-disp.ordbox.ru.  A  45.87.246.135
+disp.plane.ordbox.ru.  A  45.87.246.135
 ```
 
 ## Layout
 
 - `bin/bootstrap-runtime.sh` downloads the pinned Plane release compose assets and renders `variables.env`.
-- `nginx/disp.ordbox.ru.conf` proxies public HTTPS traffic to the local Plane proxy port.
+- `nginx/disp.plane.ordbox.ru.conf` proxies public HTTPS traffic to the local Plane proxy port.
 - `transcription/` is a private FastAPI + `faster-whisper` service used by the Plane API proxy for voice comment transcription. It is not exposed by nginx or published on a host port.
 - `runtime/` is generated on the server and intentionally ignored by Git.
 - `docker-compose.source.yml` overrides the release app images with images built from this fork while keeping the generated runtime services, ports, and volumes intact.
