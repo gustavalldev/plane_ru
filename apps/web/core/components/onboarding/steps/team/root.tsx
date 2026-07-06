@@ -343,7 +343,7 @@ export const InviteTeamStep = observer(function InviteTeamStep(props: Props) {
     >
       <CommonOnboardingHeader
         title="Пригласите команду"
-        description="В LeadUp удобнее работать вместе с командой. Пригласите коллег, чтобы начать совместную работу."
+        description="В Plane удобнее работать вместе с командой. Пригласите коллег, чтобы начать совместную работу."
       />
       <div className="w-full py-4 text-13">
         <div className="group relative mx-8 grid grid-cols-10 gap-4 py-2">

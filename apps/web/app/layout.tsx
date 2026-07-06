@@ -25,7 +25,7 @@ import icon512 from "@/app/assets/icons/icon-512x512.png?url";
 import { AppProvider } from "./provider";
 
 export const meta = () => [
-  { title: "LeadUp" },
+  { title: "Plane" },
   { name: "description", content: SITE_DESCRIPTION },
   {
     name: "keywords",
@@ -37,22 +37,22 @@ export const meta = () => [
     content:
       "width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover",
   },
-  { property: "og:title", content: "LeadUp" },
+  { property: "og:title", content: "Plane" },
   {
     property: "og:description",
     content: SITE_DESCRIPTION,
   },
-  { property: "og:url", content: "https://todo.lead-up.ru/" },
+  { property: "og:url", content: "https://todo.plane-ru.local/" },
   { property: "og:image", content: "https://app.plane.so/og-image.png" },
   { property: "og:image:width", content: "1200" },
   { property: "og:image:height", content: "630" },
-  { property: "og:image:alt", content: "LeadUp" },
-  { name: "twitter:site", content: "LeadUp" },
+  { property: "og:image:alt", content: "Plane" },
+  { name: "twitter:site", content: "Plane" },
   { name: "twitter:card", content: "summary_large_image" },
   { name: "twitter:image", content: "https://app.plane.so/og-image.png" },
   { name: "twitter:image:width", content: "1200" },
   { name: "twitter:image:height", content: "630" },
-  { name: "twitter:image:alt", content: "LeadUp" },
+  { name: "twitter:image:alt", content: "Plane" },
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -67,7 +67,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="manifest" href="/site.webmanifest.json" />
         <link rel="shortcut icon" href={faviconIco} />
         {/* Meta info for PWA */}
-        <meta name="application-name" content="LeadUp" />
+        <meta name="application-name" content="Plane" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content={SITE_NAME} />

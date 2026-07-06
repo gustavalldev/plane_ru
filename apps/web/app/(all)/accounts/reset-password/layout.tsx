@@ -11,4 +11,4 @@ export default function ResetPasswordLayout() {
   return <Outlet />;
 }
 
-export const meta: Route.MetaFunction = () => [{ title: "Новый пароль - LeadUp" }];
+export const meta: Route.MetaFunction = () => [{ title: "Новый пароль - Plane" }];

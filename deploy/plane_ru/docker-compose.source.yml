@@ -1,5 +1,5 @@
-x-leadup-source-dir: &leadup-source-dir ${PLANE_SOURCE_DIR:-/opt/leadup_plane}
-x-leadup-node-build-args: &leadup-node-build-args
+x-plane-ru-source-dir: &plane-ru-source-dir ${PLANE_SOURCE_DIR:-/opt/plane_ru}
+x-plane-ru-node-build-args: &plane-ru-node-build-args
   DOCKER_BUILDKIT: 1
   VITE_API_BASE_URL: ${VITE_API_BASE_URL:-}
   VITE_API_BASE_PATH: ${VITE_API_BASE_PATH:-/api}
@@ -12,13 +12,13 @@ x-leadup-node-build-args: &leadup-node-build-args
   VITE_WEB_BASE_URL: ${VITE_WEB_BASE_URL:-}
   VITE_WEB_BASE_PATH: ${VITE_WEB_BASE_PATH:-}
 
-x-leadup-backend-build: &leadup-backend-build
-  context: ${PLANE_SOURCE_DIR:-/opt/leadup_plane}/apps/api
+x-plane-ru-backend-build: &plane-ru-backend-build
+  context: ${PLANE_SOURCE_DIR:-/opt/plane_ru}/apps/api
   dockerfile: Dockerfile.api
   args:
     DOCKER_BUILDKIT: 1
 
-x-leadup-email-env: &leadup-email-env
+x-plane-ru-email-env: &plane-ru-email-env
   ENABLE_SIGNUP: ${ENABLE_SIGNUP:-0}
   ENABLE_SMTP: ${ENABLE_SMTP:-0}
   EMAIL_HOST: ${EMAIL_HOST:-}
@@ -31,9 +31,9 @@ x-leadup-email-env: &leadup-email-env
 
 services:
   transcription:
-    image: leadup/plane-transcription:${LEADUP_PLANE_IMAGE_TAG:-preview}
+    image: plane-ru/plane-transcription:${PLANE_RU_IMAGE_TAG:-preview}
     build:
-      context: ${PLANE_SOURCE_DIR:-/opt/leadup_plane}/deploy/leadup/transcription
+      context: ${PLANE_SOURCE_DIR:-/opt/plane_ru}/deploy/plane_ru/transcription
       dockerfile: Dockerfile
     environment:
       TRANSCRIPTION_API_TOKEN: ${TRANSCRIPTION_API_TOKEN:?TRANSCRIPTION_API_TOKEN is required}
@@ -48,24 +48,24 @@ services:
     restart: unless-stopped
 
   web:
-    image: leadup/plane-frontend:${LEADUP_PLANE_IMAGE_TAG:-preview}
+    image: plane-ru/plane-frontend:${PLANE_RU_IMAGE_TAG:-preview}
     build:
-      context: *leadup-source-dir
+      context: *plane-ru-source-dir
       dockerfile: apps/web/Dockerfile.web
-      args: *leadup-node-build-args
+      args: *plane-ru-node-build-args
 
   space:
-    image: leadup/plane-space:${LEADUP_PLANE_IMAGE_TAG:-preview}
+    image: plane-ru/plane-space:${PLANE_RU_IMAGE_TAG:-preview}
     build:
-      context: *leadup-source-dir
+      context: *plane-ru-source-dir
       dockerfile: apps/space/Dockerfile.space
-      args: *leadup-node-build-args
+      args: *plane-ru-node-build-args
 
   api:
-    image: leadup/plane-backend:${LEADUP_PLANE_IMAGE_TAG:-preview}
-    build: *leadup-backend-build
+    image: plane-ru/plane-backend:${PLANE_RU_IMAGE_TAG:-preview}
+    build: *plane-ru-backend-build
     environment:
-      <<: *leadup-email-env
+      <<: *plane-ru-email-env
       TRANSCRIPTION_SERVICE_URL: ${TRANSCRIPTION_SERVICE_URL:-http://transcription:8000}
       TRANSCRIPTION_API_TOKEN: ${TRANSCRIPTION_API_TOKEN:?TRANSCRIPTION_API_TOKEN is required}
       TRANSCRIPTION_UPLOAD_SIZE_LIMIT: ${TRANSCRIPTION_UPLOAD_SIZE_LIMIT:-26214400}
@@ -73,19 +73,19 @@ services:
       - transcription
 
   worker:
-    image: leadup/plane-backend:${LEADUP_PLANE_IMAGE_TAG:-preview}
-    build: *leadup-backend-build
-    environment: *leadup-email-env
+    image: plane-ru/plane-backend:${PLANE_RU_IMAGE_TAG:-preview}
+    build: *plane-ru-backend-build
+    environment: *plane-ru-email-env
 
   beat-worker:
-    image: leadup/plane-backend:${LEADUP_PLANE_IMAGE_TAG:-preview}
-    build: *leadup-backend-build
-    environment: *leadup-email-env
+    image: plane-ru/plane-backend:${PLANE_RU_IMAGE_TAG:-preview}
+    build: *plane-ru-backend-build
+    environment: *plane-ru-email-env
 
   migrator:
-    image: leadup/plane-backend:${LEADUP_PLANE_IMAGE_TAG:-preview}
-    build: *leadup-backend-build
-    environment: *leadup-email-env
+    image: plane-ru/plane-backend:${PLANE_RU_IMAGE_TAG:-preview}
+    build: *plane-ru-backend-build
+    environment: *plane-ru-email-env
 
 volumes:
   transcription_cache:

@@ -1,9 +1,9 @@
-# Аудит LeadUp Plane
+# Аудит Plane
 
 Дата: 2026-06-25
-Репозиторий: `/Users/kirill/Documents/workspace/leadup_plane`
+Репозиторий: `/Users/kirill/Documents/workspace/plane_ru`
 Ветка: `codex/user-name-mobile-truncation`
-Локальная проверка: `http://127.0.0.1:3000/leadup-local/projects/1fc135e5-fdcf-4107-b8c7-da0aa333cd0c/issues/`
+Локальная проверка: `http://127.0.0.1:3000/plane-ru-local/projects/1fc135e5-fdcf-4107-b8c7-da0aa333cd0c/issues/`
 
 ## Контекст
 
@@ -37,7 +37,7 @@
 | P0 | Убрать или скрыть Billing/Plans, Star us on GitHub, Community, product updates/changelog | Для корпоративного self-host это выглядит как чужой продукт и ведет на Plane. |
 | P1 | Добить английские значения в `packages/i18n/src/locales/ru` | В ru-локали найдено 96 значений с английскими кусками. |
 | P1 | Перевести hardcoded placeholders/search/empty states/editor menu | Много UI остается на английском вне JSON. |
-| P1 | Исправить `html lang="en"` и meta/PWA manifest под русский/LeadUp | Сейчас браузер и доступность считают приложение английским Plane. |
+| P1 | Исправить `html lang="en"` и meta/PWA manifest под русский/Plane | Сейчас браузер и доступность считают приложение английским Plane. |
 | P1 | Довести мобильную верстку всех основных экранов, не только issue list/board | Пользователь уже ловил обрезания в mobile; нужен сценарный регресс. |
 | P2 | Сделать автотест русификации Playwright/Cypress на основные маршруты | Нужен не разовый grep, а постоянный gate перед деплоем. |
 | P2 | Разобрать console warnings/hydration warning в dev runtime | Сейчас шум консоли маскирует реальные ошибки. |
@@ -141,7 +141,7 @@
 
 ## Self-host/брендовые элементы Plane
 
-Для рабочего домена `todo.lead-up.ru` стоит убрать или заменить:
+Для рабочего домена `todo.plane-ru.local` стоит убрать или заменить:
 
 - кнопку/ссылку `Оцените нас на GitHub`;
 - нижнюю кнопку `Сообщество`;
@@ -168,7 +168,7 @@
 - `apps/web/app/root.tsx`;
 - `apps/web/app/layout.tsx`.
 
-Рекомендация: не переводить экран тарифов, а скрыть его целиком для self-host LeadUp. Если оставить, он будет выглядеть как платная SaaS-версия Plane и путать пользователей.
+Рекомендация: не переводить экран тарифов, а скрыть его целиком для self-host Plane. Если оставить, он будет выглядеть как платная SaaS-версия Plane и путать пользователей.
 
 ## HTML, PWA и метаданные
 
@@ -227,7 +227,7 @@
 
 Проверено через in-app browser:
 
-- URL: `http://127.0.0.1:3000/leadup-local/projects/1fc135e5-fdcf-4107-b8c7-da0aa333cd0c/issues/`;
+- URL: `http://127.0.0.1:3000/plane-ru-local/projects/1fc135e5-fdcf-4107-b8c7-da0aa333cd0c/issues/`;
 - title: `Voice Agent - Рабочие элементы`;
 - экран не пустой, meaningful content отрисован;
 - desktop screenshot: рабочие элементы отображаются;
@@ -265,7 +265,7 @@ Console health:
 - `packages/ui/src/dropdowns/helper.tsx`: `FIXME: fix this!!!`;
 - много `any` в shared UI/utils, особенно dropdown/progress/timeline.
 
-Это не все надо чинить сейчас. Но для LeadUp-версии критичны auth/i18n/sidebar/mobile, а не общий refactor всех `any`.
+Это не все надо чинить сейчас. Но для Plane-версии критичны auth/i18n/sidebar/mobile, а не общий refactor всех `any`.
 
 ## Рекомендуемый план работ
 

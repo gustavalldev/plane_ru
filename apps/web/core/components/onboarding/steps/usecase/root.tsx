@@ -86,7 +86,7 @@ export const UseCaseSetupStep = observer(function UseCaseSetupStep({ handleStepC
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-10">
       {/* Header */}
-      <CommonOnboardingHeader title="Для чего вы будете использовать LeadUp?" description="Укажите цели и размер команды." />
+      <CommonOnboardingHeader title="Для чего вы будете использовать Plane?" description="Укажите цели и размер команды." />
 
       {/* Use Case Selection */}
       <div className="flex flex-col gap-3">

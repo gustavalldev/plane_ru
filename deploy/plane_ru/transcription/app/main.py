@@ -23,7 +23,7 @@ ALLOWED_AUDIO_TYPES = {
     "video/webm",
 }
 
-app = FastAPI(title="LeadUp Plane transcription", version="0.1.0")
+app = FastAPI(title="Plane transcription", version="0.1.0")
 _model = None
 _model_lock = threading.Lock()
 

@@ -11,4 +11,4 @@ export default function ForgotPasswordLayout() {
   return <Outlet />;
 }
 
-export const meta: Route.MetaFunction = () => [{ title: "Сброс пароля - LeadUp" }];
+export const meta: Route.MetaFunction = () => [{ title: "Сброс пароля - Plane" }];

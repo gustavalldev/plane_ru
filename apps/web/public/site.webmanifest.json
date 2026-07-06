@@ -1,7 +1,7 @@
 {
-  "name": "LeadUp",
-  "short_name": "LeadUp",
-  "description": "Рабочее пространство LeadUp для задач, проектов и командной работы.",
+  "name": "Plane",
+  "short_name": "Plane",
+  "description": "Рабочее пространство Plane для задач, проектов и командной работы.",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#f9fafb",

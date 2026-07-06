@@ -36,10 +36,10 @@ export function AuthHeaderBase(props: TAuthHeaderBase) {
   const { pageTitle, additionalAction } = props;
   return (
     <>
-      <PageHead title={pageTitle + " - LeadUp"} />
+      <PageHead title={pageTitle + " - Plane"} />
       <div className="sticky top-0 flex w-full flex-shrink-0 items-center justify-between gap-6">
         <Link href="/" className="text-18 font-semibold text-primary">
-          LeadUp
+          Plane
         </Link>
         {additionalAction}
       </div>

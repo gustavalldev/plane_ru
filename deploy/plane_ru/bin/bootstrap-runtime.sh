@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 RELEASE="${PLANE_RELEASE:-v1.3.1}"
-DOMAIN="${PLANE_DOMAIN:-todo.lead-up.ru}"
+DOMAIN="${PLANE_DOMAIN:-todo.plane-ru.local}"
 HTTP_PORT="${PLANE_HTTP_PORT:-18080}"
 HTTPS_PORT="${PLANE_HTTPS_PORT:-18443}"
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

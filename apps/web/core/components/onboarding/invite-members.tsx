@@ -340,7 +340,7 @@ export function InviteMembers(props: Props) {
           <div className="mx-auto w-4/5 space-y-1 py-4 text-center">
             <h3 className="text-24 font-bold text-primary">Пригласите команду</h3>
             <p className="font-medium text-placeholder">
-              В LeadUp удобнее работать вместе с командой. Пригласите коллег, чтобы начать совместную работу.
+              В Plane удобнее работать вместе с командой. Пригласите коллег, чтобы начать совместную работу.
             </p>
           </div>
           <form
