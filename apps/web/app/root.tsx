@@ -102,7 +102,7 @@ export const meta: Route.MetaFunction = () => [
     property: "og:description",
     content: SITE_DESCRIPTION,
   },
-  { property: "og:url", content: "https://todo.plane-ru.local/" },
+  { property: "og:url", content: "https://disp.ordbox.ru/" },
   { property: "og:image", content: ogImage },
   { property: "og:image:width", content: "1200" },
   { property: "og:image:height", content: "630" },

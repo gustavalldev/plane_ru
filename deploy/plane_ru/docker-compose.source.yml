@@ -1,4 +1,4 @@
-x-plane-ru-source-dir: &plane-ru-source-dir ${PLANE_SOURCE_DIR:-/opt/plane_ru}
+x-plane-ru-source-dir: &plane-ru-source-dir ${PLANE_SOURCE_DIR:-/opt/disp/deploy/plane_ru}
 x-plane-ru-node-build-args: &plane-ru-node-build-args
   DOCKER_BUILDKIT: 1
   VITE_API_BASE_URL: ${VITE_API_BASE_URL:-}
@@ -13,7 +13,7 @@ x-plane-ru-node-build-args: &plane-ru-node-build-args
   VITE_WEB_BASE_PATH: ${VITE_WEB_BASE_PATH:-}
 
 x-plane-ru-backend-build: &plane-ru-backend-build
-  context: ${PLANE_SOURCE_DIR:-/opt/plane_ru}/apps/api
+  context: ${PLANE_SOURCE_DIR:-/opt/disp/deploy/plane_ru}/apps/api
   dockerfile: Dockerfile.api
   args:
     DOCKER_BUILDKIT: 1
@@ -33,7 +33,7 @@ services:
   transcription:
     image: plane-ru/plane-transcription:${PLANE_RU_IMAGE_TAG:-preview}
     build:
-      context: ${PLANE_SOURCE_DIR:-/opt/plane_ru}/deploy/plane_ru/transcription
+      context: ${PLANE_SOURCE_DIR:-/opt/disp/deploy/plane_ru}/deploy/plane_ru/transcription
       dockerfile: Dockerfile
     environment:
       TRANSCRIPTION_API_TOKEN: ${TRANSCRIPTION_API_TOKEN:?TRANSCRIPTION_API_TOKEN is required}
