@@ -23,6 +23,7 @@ disp.plane.ordbox.ru.  A  45.87.246.135
 - `transcription/` is a private FastAPI + `faster-whisper` service used by the Plane API proxy for voice comment transcription. It is not exposed by nginx or published on a host port.
 - `runtime/` is generated on the server and intentionally ignored by Git.
 - `docker-compose.source.yml` overrides the release app images with images built from this fork while keeping the generated runtime services, ports, and volumes intact.
+- `plane-minio` is pinned to a `cpuv1` MinIO image because the `disp-prod` CPU profile does not support x86-64-v2 required by current `latest` images.
 
 ## Deploy Custom Source
 
@@ -37,7 +38,7 @@ docker compose --env-file variables.env -p plane-ru \
 docker compose --env-file variables.env -p plane-ru \
   -f docker-compose.yml \
   -f ../docker-compose.source.yml \
-  up -d transcription migrator api worker beat-worker web space admin live proxy
+  up -d plane-minio transcription migrator api worker beat-worker web space admin live proxy
 ```
 
 ## Notes

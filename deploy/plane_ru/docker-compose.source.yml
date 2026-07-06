@@ -30,6 +30,9 @@ x-plane-ru-email-env: &plane-ru-email-env
   EMAIL_USE_SSL: ${EMAIL_USE_SSL:-0}
 
 services:
+  plane-minio:
+    image: minio/minio:${MINIO_IMAGE_TAG:-RELEASE.2025-09-07T16-13-09Z-cpuv1}
+
   transcription:
     image: plane-ru/plane-transcription:${PLANE_RU_IMAGE_TAG:-preview}
     build:
